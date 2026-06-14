@@ -1,19 +1,28 @@
 \babel@toc {italian}{}\relax 
 \babel@toc {italian}{}\relax 
-\contentsline {chapter}{\numberline {1}Introduction}{3}{chapter.1}%
-\contentsline {chapter}{\numberline {2}Phases FGPT}{5}{chapter.2}%
+\contentsline {chapter}{\numberline {1}Introduzione}{3}{chapter.1}%
+\contentsline {chapter}{\numberline {2}Fasi FGPT}{5}{chapter.2}%
 \contentsline {section}{\numberline {2.1}Target Scoping}{5}{section.2.1}%
-\contentsline {section}{\numberline {2.2}Information Gathering}{5}{section.2.2}%
+\contentsline {section}{\numberline {2.2}OSINT \& Pre-Engagement Intelligence}{5}{section.2.2}%
 \contentsline {section}{\numberline {2.3}Target Discovery}{6}{section.2.3}%
 \contentsline {section}{\numberline {2.4}Target Enumeration}{7}{section.2.4}%
-\contentsline {subsection}{\numberline {2.4.1}OS Fingerprinting (Passivo e Attivo)}{7}{subsection.2.4.1}%
-\contentsline {subsection}{\numberline {2.4.2}Fingerprinting Passivo (p0f \& cURL)}{7}{subsection.2.4.2}%
-\contentsline {subsection}{\numberline {2.4.3}Fingerprinting Attivo (Nmap)}{8}{subsection.2.4.3}%
-\contentsline {subsection}{\numberline {2.4.4}Services Enumeration}{9}{subsection.2.4.4}%
-\contentsline {subsection}{\numberline {2.4.5}Web Directory Enumeration (Gobuster \& Owasp Dirbuster)}{9}{subsection.2.4.5}%
-\contentsline {section}{\numberline {2.5}Vulnerability Assessment}{12}{section.2.5}%
-\contentsline {section}{\numberline {2.6}Target Exploitation}{12}{section.2.6}%
-\contentsline {section}{\numberline {2.7}Privilege Escalation}{12}{section.2.7}%
-\contentsline {section}{\numberline {2.8}Maintaining Access}{12}{section.2.8}%
-\contentsline {chapter}{\numberline {3}Final Consideration}{13}{chapter.3}%
-\contentsline {chapter}{\numberline {4}References}{14}{chapter.4}%
+\contentsline {subsection}{\numberline {2.4.1}OS Fingerprinting}{7}{subsection.2.4.1}%
+\contentsline {subsubsection}{Fingerprinting Passivo (p0f \& cURL)}{7}{section*.3}%
+\contentsline {subsubsection}{Fingerprinting Attivo (Nmap)}{8}{section*.4}%
+\contentsline {subsection}{\numberline {2.4.2}Services Enumeration}{9}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Web Directory Enumeration (Gobuster \& Owasp Dirbuster)}{9}{subsection.2.4.3}%
+\contentsline {section}{\numberline {2.5}Vulnerability Assessment}{11}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Information Disclosure e Steganografia (\texttt {/admin})}{12}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}Web Security Misconfigurations (Scansione Automatizzata)}{13}{subsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.5.3}Analisi Servizio di Stampa (CUPS su porta 631)}{13}{subsection.2.5.3}%
+\contentsline {subsection}{\numberline {2.5.4}Identificazione Vettore d'Attacco Principale (\texttt {/superadmin.php})}{13}{subsection.2.5.4}%
+\contentsline {section}{\numberline {2.6}Target Exploitation}{15}{section.2.6}%
+\contentsline {subsection}{\numberline {2.6.1}Missing Anti-Clickjacking (UI Redressing PoC)}{15}{subsection.2.6.1}%
+\contentsline {subsection}{\numberline {2.6.2}CUPS Remote Registration (CVE-2024-47176)}{16}{subsection.2.6.2}%
+\contentsline {subsection}{\numberline {2.6.3}Web Remote Code Execution (\texttt {/superadmin.php})}{16}{subsection.2.6.3}%
+\contentsline {section}{\numberline {2.7}Privilege Escalation}{19}{section.2.7}%
+\contentsline {subsection}{\numberline {2.7.1}User Pivoting (da www-data a haclabs)}{19}{subsection.2.7.1}%
+\contentsline {subsection}{\numberline {2.7.2}Vertical Privilege Escalation (da haclabs a root)}{20}{subsection.2.7.2}%
+\contentsline {section}{\numberline {2.8}Maintaining Access}{22}{section.2.8}%
+\contentsline {chapter}{\numberline {3}Conclusioni}{23}{chapter.3}%
+\contentsline {chapter}{\numberline {4}Bibliografia}{24}{chapter.3}%

