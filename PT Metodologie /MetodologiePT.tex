@@ -1,0 +1,382 @@
+\documentclass[11pt]{report}
+
+\usepackage[top=2.2cm,bottom=2cm,left=2cm,right=2cm,headheight=15pt]{geometry}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{fancyhdr}    
+\usepackage{lastpage}
+\usepackage[italian]{babel}
+\usepackage{datetime}
+\usepackage[colorlinks=true, linkcolor=black, urlcolor=blue!60!black, citecolor=black]{hyperref}
+
+\usepackage{booktabs}   % tabelle professionali
+\usepackage{array}      % colonne a larghezza fissa
+\usepackage[dvipsnames,table]{xcolor} % colori testuali + colori per tabelle
+\usepackage{colortbl}   % celle colorate
+\usepackage{enumitem}   % liste personalizzate
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{arydshln}
+\usepackage{tcolorbox}
+\usepackage{tikz}       % grafici nativi LaTeX
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}
+\usepackage{dirtree}
+
+
+
+\definecolor{headerblue}{RGB}{0, 102, 04}
+\definecolor{zonered}{RGB}{180, 0, 0}
+
+
+
+
+\renewcommand{\contentsname}{Indice}
+\renewcommand{\sectionmark}[1]{\markboth{#1}{#1}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\nouppercase{\leftmark}}
+\fancyhead[R]{pagina \thepage\ di \pageref*{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+	
+	%==================================================
+	%  TITLE PAGE
+	%==================================================
+	\begin{titlepage}
+		\centering
+		% Logo robusto: usa l'SVG se presente, altrimenti non blocca la compilazione
+		\IfFileExists{assets/logoUnisa(1).svg}{%
+			\includesvg[scale=1.5]{assets/logoUnisa(1).svg}%
+		}{%
+			\IfFileExists{assets/logoUnisa(1).pdf}{\includegraphics[width=0.45\textwidth]{assets/logoUnisa(1).pdf}}{}%
+		}
+		\par
+		\vspace{3cm}
+		
+		{\Huge \textbf{Metodologie Utilizzate PT}}\par
+		\vspace{0.5cm}
+		{\Large \textit{Academy - Cybersecurity}}\par
+		\vspace{0.5cm}
+		{\large Macchina Virtuale: \texttt{no\_name}}\par
+		
+		\vspace{6cm}
+		
+		{\large \textbf{Gruppo 11}}\par
+		\vspace{0.15cm}
+		Emiddio Ferrentino - 0612708848\par
+		Daniele Manzo - 0612709599\par
+		Andrea Rossomando - 0612708971\par
+		
+		\vfill
+		{\Large A.A. 2025/2026}
+	\end{titlepage}
+	
+	\thispagestyle{empty}
+	
+	%==================================================
+	%  SOMMARIO
+	%==================================================
+	\section*{Sommario}
+	Il presente documento ha lo scopo di illustrare in maniera esaustiva e prettamente operativa le metodologie adottate durante l'attività di Penetration Testing effettuata sulla macchina virtuale denominata \textbf{no\_name}. L'intero processo di valutazione ricalca le linee guida del Framework Generale per il Penetration Testing (FGPT). L'obiettivo primario è la documentazione accurata e riproducibile di ogni singola fase, evidenziando i vettori d'attacco scoperti, i comandi impartiti a terminale, gli script sviluppati e gli output significativi restituiti dai software di analisi.
+	
+	\vspace{1cm} 
+	
+	\newpage
+	\tableofcontents
+	\newpage
+	
+	%==================================================
+	%  1. INTRODUCTION
+	%==================================================
+	\chapter{Introduction}
+	Il documento ha lo scopo di illustrare quelle che sono le metodologie adottate durante l’attività di Penetration Testing effettuata sulla macchina virtuale denominata \textbf{no\_name}, distribuita da HacLabs, seguendo le fasi principali del FGPT. L'obiettivo principale è valutare il livello di sicurezza dell'infrastruttura attraverso un processo sistematico e riproducibile, documentando ogni fase con i relativi strumenti, comandi ed output significativi.
+	
+	La macchina \textbf{no\_name} è classificata come \textit{beginner/intermediate} e presenta tre flag nascoste nelle directory home degli utenti. L'accesso iniziale è deliberatamente reso complesso, mentre la privilege escalation risulta più diretta una volta ottenuta una shell.
+	
+	L'attività è stata condotta in un ambiente virtualizzato isolato, privo di connettività verso reti di produzione. Sono stati rispettati i seguenti vincoli operativi:
+	\begin{itemize}[leftmargin=*]
+		\item Scope limitato alla macchina \textbf{no\_name} (\texttt{192.168.238.7})
+		\item Nessuna azione distruttiva o alterazione persistente dei sistemi
+		\item Utilizzo esclusivo di tool open-source e framework standard
+		\item Documentazione completa di ogni azione eseguita
+	\end{itemize}
+	
+	L'ambiente è stato configurato su VirtualBox con networking in modalità Host-Only, consentendo la visibilità reciproca tra le macchine nella subnet \texttt{192.168.238.0/24}. Non vengono incluse ulteriori informazioni configurative in quanto non rilevanti ai fini del documento metodologico.
+	
+	Di seguito sono elencati tutti gli strumenti impiegati durante l'attività, suddivisi per fase di utilizzo.
+	
+	\vspace{0.3cm}
+	\begin{table}[H]
+		\centering
+		\renewcommand{\arraystretch}{1.3}
+		\begin{tabular}{l p{4.5cm} p{8.5cm}}
+			\toprule
+			\textbf{Tool} & \textbf{Versione / Note} & \textbf{Finalità} \\
+			\midrule
+			\texttt{Netdiscover} & v0.3.4 & ARP Scanning - Target Discovery \\
+			\texttt{Nmap}        & v7.99 & Port scanning, OS fingerprinting attivo, service detection \\
+			\texttt{Gobuster}    & v3.8.2 & Directory brute-forcing su web server \\
+			\texttt{OWASP DirBuster} & v1.0-RC1 & Directory brute-forcing (Interfaccia Grafica) \\
+			\texttt{Nessus Essentials} & Versione web & Vulnerability scanning automatizzato \\
+			\texttt{OpenVAS}     & Versione web & Vulnerability scanning - report PDF \\
+			\texttt{OWASP ZAP}   & Versione web & Web application scanning \\
+			\texttt{Nikto}       & Versione CLI & Web server vulnerability scanner \\
+			\texttt{Netcat (nc)} & Traditional & Reverse shell listener / gestione connessione \\
+			\texttt{Browser / DevTools} & Firefox & Ispezione manuale del codice sorgente delle pagine web \\
+			\bottomrule
+		\end{tabular}
+		\caption{Classificazione e finalità dello stack tecnologico utilizzato.}
+		\label{tab:tools_mapping}
+	\end{table}
+	\vspace{0.3cm}
+	
+	
+	%==================================================
+	%  2. PHASES FGPT
+	%==================================================
+	\chapter{Phases FGPT}
+	\section{Target Scoping}
+	La fase di \textit{Target Scoping} definisce in maniera rigorosa i confini dell'attività di Penetration Testing (le \textit{Rules of Engagement}) e i vincoli operativi a cui il team di analisi deve attenersi. 
+	
+	Trattandosi di un ingaggio condotto su un ambiente di laboratorio di tipo CTF e non su un'infrastruttura di produzione, il perimetro autorizzato è stato concordato preventivamente e circoscritto in modo restrittivo alla singola macchina bersaglio. Qualsiasi asset o indirizzo IP non esplicitamente autorizzato è da considerarsi tassativamente fuori dal perimetro di test.
+	
+	Di seguito si formalizzano i limiti logici ed etici dell'ingaggio:
+	
+	\begin{description}[font=\color{headerblue}\bfseries, leftmargin=1cm, style=nextline]
+		\item[In-Scope (Bersagli Autorizzati)] 
+		L'unico nodo su cui è consentito operare attività offensive, sia passive che attive, è l'host \textbf{no\_name} (identificato nel capitolo successivo all'indirizzo IP \textbf{\texttt{192.168.238.7}}). Rientrano nel perimetro autorizzato l'enumerazione di tutti i servizi di rete esposti (su protocolli TCP e UDP), l'attacco alle applicazioni web ospitate e le tecniche di \textit{Privilege Escalation} a livello di sistema operativo locale.
+		
+		\item[Out-of-Scope (Bersagli Esclusi)] 
+		Sono categoricamente esclusi dai test di penetrazione il gateway dell'infrastruttura virtuale (\texttt{192.168.238.2}), l'host di servizio VirtualBox (\texttt{192.168.238.6}), il nodo attaccante Kali Linux (\texttt{192.168.238.4}) e qualsiasi altro segmento di rete estraneo al target primario.
+		
+		\item[Metodologie non consentite] 
+		Al fine di non compromettere l'integrità o la stabilità dell'ambiente di laboratorio, non è in alcun modo autorizzato l'utilizzo di tecniche che comportino la saturazione delle risorse o l'interruzione dei servizi, come attacchi di tipo \textit{Denial of Service} (DoS / DDoS). Allo stesso modo, sono escluse dal mandato tutte le metodologie basate sull'\textit{Ingegneria Sociale}.
+	\end{description}
+	
+	
+	\section{Information Gathering}
+	Prima di interagire attivamente con l'ambiente di laboratorio, la primissima fase di \textit{Information Gathering} si è concentrata sull'analisi passiva della documentazione ufficiale fornita dal creatore dell'infrastruttura (\textit{\href{https://www.vulnhub.com/entry/haclabs-no_name,429/}{Haclabs}}) sulla piattaforma di distribuzione VulnHub. Questa ricognizione informativa, assimilabile a un'attività di OSINT (Open-Source Intelligence), ha permesso di delineare le regole d'ingaggio e le peculiarità tecniche del bersaglio.\\
+	Dalla scheda tecnica dell'asset sono emersi i seguenti dati cruciali per l'orientamento delle operazioni:
+	
+	\begin{itemize}[label=\textcolor{black}{$\blacktriangleright$}, leftmargin=*]
+		\item \textbf{Obiettivo dell'Ingaggio:} L'ambiente è strutturato secondo la metodologia \textit{Boot2Root}. L'attaccante deve compromettere il sistema fino a ottenere i massimi privilegi amministrativi (\textit{root}) e individuare esattamente \textbf{3 flag} di verifica, posizionate dall'autore all'interno delle directory \texttt{home} degli utenti di sistema.
+		\item \textbf{Profilazione della Difficoltà:} L'asset è classificato con un grado di difficoltà \textit{Beginner/Intermediate}.
+		\item \textbf{Vettori di Attacco (Hint dell'autore):} Le note di rilascio indicano esplicitamente che l'ottenimento dell'accesso iniziale (la prima \textit{reverse shell}) richiederà uno sforzo analitico maggiore e risulterà "complicato", mentre le successive vulnerabilità per la \textit{Privilege Escalation} dovrebbero rivelarsi più dirette. Questo dettaglio suggerisce al team di concentrare il massimo sforzo temporale nell'enumerazione iniziale dei servizi esposti.
+		\item \textbf{Configurazione di Rete:} La macchina è preconfigurata per acquisire automaticamente un indirizzo IP tramite protocollo DHCP, confermando la necessità di procedere con uno \textit{sweep} attivo della rete (Target Discovery) per individuarne l'esatta collocazione logica.
+	\end{itemize}
+\section{Target Discovery}
+La prima fase operativa ha previsto l'identificazione degli host attivi all'interno del segmento di rete locale. Operando in un ambiente \textit{Black-Box}, è stato utilizzato il tool \texttt{netdiscover} per inviare richieste ARP (Address Resolution Protocol) in \textit{broadcast} e mappare gli indirizzi IP associati ai vari MAC address presenti nel laboratorio.
+
+\begin{tcolorbox}[colback=gray!10, colframe=black!70, title=Ricognizione di rete con Netdiscover]
+	\texttt{sudo netdiscover -r 192.168.238.0/24}
+\end{tcolorbox}
+
+\begin{figure}[H] % La [H] forza l'immagine a stare ESATTAMENTE QUI
+	\centering
+	\includegraphics[width=0.85\textwidth]{assets/academy_photo/targetDiscovery/netdiscover.jpeg}
+	\caption{Output del comando netdiscover con l'identificazione degli host attivi.}
+\end{figure}
+L'identificazione esatta dell'host bersaglio è avvenuta tramite un processo di esclusione logica. L'output dello scanner ha rivelato la presenza di tre indirizzi IP attivi, oltre a quello della macchina attaccante (\texttt{192.168.238.4}). Avendo mappato l'infrastruttura di base, è stato possibile dedurre che l'indirizzo \texttt{192.168.238.2} corrispondeva al gateway logico assegnato di default dall'hypervisor e che l'IP \texttt{192.168.238.6} era associato a un servizio interno dell'host fisico. 
+
+Di conseguenza, l'unico indirizzo IP rimanente e sconosciuto, ovvero il \textbf{\texttt{192.168.238.7}}, è stato inequivocabilmente associato alla macchina virtuale \textbf{no\_name}. A conferma di tale deduzione, l'analisi del campo OUI (Organizationally Unique Identifier) del MAC Address ha restituito come vendor \textit{PCS Systemtechnik GmbH}, la firma digitale standard delle schede di rete emulate da Oracle VirtualBox.
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		node distance=3cm,
+		box/.style={draw=headerblue, thick, fill=headerblue!5, rectangle, rounded corners, minimum width=3.5cm, minimum height=1.8cm, align=center},
+		targetbox/.style={draw=zonered, thick, fill=zonered!5, rectangle, rounded corners, minimum width=3.5cm, minimum height=1.8cm, align=center},
+		firewallbox/.style={draw=gray, thick, fill=gray!10, rectangle, rounded corners, minimum width=3.5cm, minimum height=1.8cm, align=center},
+		line/.style={draw=black!70, thick}
+		]
+		% Canale di comunicazione principale (Bus della Sotto-rete)
+		\draw[ultra thick, color=headerblue] (-5.5,0) -- (6.5,0);
+		\node[anchor=south west] at (-5.5,0.1) {\footnotesize \textbf{Rete Isolata VirtualBox (Host-Only Mode)}};
+		\node[anchor=north east] at (6.5,-0.1) {\footnotesize \texttt{192.168.238.0/24}};
+		
+		% Kali Linux
+		\draw[line] (-3.5,0) -- (-3.5,1.2);
+		\node[box] (kali) at (-3.5,2.1) {
+			\textbf{Kali Linux} \\ 
+			\small Attacker Machine \\ 
+			\footnotesize \texttt{192.168.238.4}
+		};
+		
+		% no_name VM
+		\draw[line] (0.5,0) -- (0.5,1.2);
+		\node[targetbox] (target) at (0.5,2.1) {
+			\textbf{no\_name VM} \\ 
+			\small Target (HacLabs) \\ 
+			\footnotesize \texttt{192.168.238.7}
+		};
+		
+		% Firewalled Host
+		\draw[line] (4.5,0) -- (4.5,1.2);
+		\node[firewallbox] (firewall) at (4.5,2.1) {
+			\textbf{Firewalled Host} \\ 
+			\small VirtualBox Service \\ 
+			\footnotesize \texttt{192.168.238.6}
+		};
+		
+		% VBox Gateway (Messo in basso per bilanciare l'immagine)
+		\draw[line] (-1.5,0) -- (-1.5,-1.2);
+		\node[box, draw=gray, fill=gray!5] (vbox) at (-1.5,-2.1) {
+			\textbf{VBox Interface} \\ 
+			\small Gateway Logico \\ 
+			\footnotesize \texttt{192.168.238.2}
+		};
+		
+	\end{tikzpicture}
+	\vspace{0.3cm}
+	\caption{Topologia logica dell'ambiente di laboratorio isolato con i nodi attivi rilevati.}
+	\label{fig:metodologie_topologia}
+\end{figure}
+
+	
+\section{Target Enumeration}
+Una volta venuti a conoscenza dell'IP della macchina target, è stato possibile passare alla fase successiva di \textit{Enumerazione}, utilizzando strumenti che consentano di ottenere una panoramica a diversi livelli di dettaglio del sistema operativo e dei servizi di rete aperti a tutti i nodi dell'infrastruttura.
+
+\subsection{OS Fingerprinting (Passivo e Attivo)}
+Individuato l'indirizzo IP del bersaglio, il passo successivo ha riguardato la profilazione del Sistema Operativo. Al fine di simulare un approccio quanto più stealth e realistico possibile, l'attività è stata suddivisa in due fases: una prima analisi passiva basata sull'intercettazione del traffico e una successiva validazione attiva.
+
+\subsection{Fingerprinting Passivo (p0f \& cURL)}
+Il fingerprinting passivo si basa sull'ascolto silente dei pacchetti di rete, senza inviare payload intrusivi al target, analizzando le firmas dello stack TCP/IP e i banner applicativi. Per questa fase è stato configurato in ascolto il tool \texttt{p0f} sull'interfaccia di rete locale.
+
+\begin{tcolorbox}[colback=gray!10, colframe=black!70, title=Avvio sniffing passivo]
+	\texttt{sudo p0f -i eth1}
+\end{tcolorbox}
+
+Per generare traffico legittimo da far analizzare allo sniffer, è stata effettuata una semplice richiesta HTTP alla radice del web server del target utilizzando \texttt{curl}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.85\textwidth]{assets/academy_photo/targetEnumeration/passive_fingerprint_curl.png}
+	\caption{Richiesta cURL e risposta HTTP con esposizione del form HTML del target.}
+	\label{fig:passive_curl}
+\end{figure}
+
+L'intercettazione di questo scambio di pacchetti ha permesso a \texttt{p0f} di estrarre preziose informazioni diagnostiche. Sebbene l'analisi iniziale del pacchetto SYN+ACK (firmas TCP) non fosse riuscita a determinare con esattezza il kernel, l'ispezione della risposta HTTP ha rivelato esplicitamente la firma del server web.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.85\textwidth]{assets/academy_photo/targetEnumeration/passive_fingerprint_two.png}
+	\caption{Output di p0f inerente all'estrazione dei metadati del server web Apache.}
+	\label{fig:passive_p0f_metadata}
+\end{figure}
+
+Come si evince dall'output (\texttt{raw\_sig = ... Apache/2.4.29 (Ubuntu)}), il sistema remoto esegue una distribuzione \textbf{Ubuntu Linux}. Un'ulteriore deduzione tecnica permette di restringere il campo: la versione 2.4.29 di Apache è storicamente il pacchetto predefinito distribuito sui repository di \textbf{Ubuntu 18.04 LTS (Bionic Beaver)}.
+
+\subsection{Fingerprinting Attivo (Nmap)}
+Per validare le ipotesi raccolte passivamente, si è proceduto con un OS Fingerprinting attivo tramite \texttt{Nmap}. Questa tecnica, seppur più rumorosa, invia pacchetti TCP/UDP malformati e sonda le risposte specifiche (RFC compliance) per determinare l'esatta architettura del kernel.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{assets/academy_photo/targetEnumeration/os_fingerprint_nmap.jpeg}
+	\caption{Risultato dell'OS Fingerprinting attivo e identificazione euristica del kernel tramite Nmap.}
+	\label{fig:active_nmap_os}
+\end{figure}
+
+I risultati della scansione attiva hanno confermato le deduzioni precedenti:
+\begin{itemize}[label=\textcolor{black}{$\blacktriangleright$}, leftmargin=*]
+	\item L'host è effettivamente un sistema basato su \textbf{Linux}.
+	\item La famiglia del kernel rilevata appartiene alle release \textbf{4.X / 5.X} (nello specifico, compatibile con \textit{Linux 4.15 - 5.19}), dato perfettamente coerente con il kernel standard di un'installazione Ubuntu 18.04.
+	\item La scansione ha inoltre confermato l'apertura della \textbf{porta 80/tcp} associata al servizio HTTP.
+\end{itemize}
+
+\subsection{Services Enumeration}
+Con il fingerprinting siamo riusciti a estrarre non solo informazioni sul sistema operativo (Ubuntu) ma anche a scoprire la presenza di un servizio HTTP sulla porta 80 basato su Apache 2.4.29 e da ciò dedurre una possibile e molto probabile versione del SO che la macchina target ospita (Ubuntu 18.04 LTS).
+È ora necessario comprendere se il target possieda altri servizi esposti e valutare eventualmente un'attività di ricognizione su tali servizi nell'eventualità che questi presentino vulnerabilità note.
+\newline
+Con l'ausilio di \texttt{Nmap} effettuiamo \textit{port scanning} su \texttt{no\_name} su tutte e 65535 porte:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{assets/academy_photo/targetEnumeration/port_scanning_nmap.jpeg}
+	\caption{Scansione completa del range porta TCP (1-65535) eseguita con Nmap.}
+	\label{fig:nmap_full_scan}
+\end{figure}
+
+Dai risultati si evince che l'unica porta aperta è la 80 e, come volevasi dimostrare, Nmap è riuscito a intuire sia la versione di Apache che il sistema operativo del target. A questo punto è chiaro che il focus del team nella prossima fase del framework sarà l'individuazione di \texttt{vulnerabilità web}.
+
+\subsection{Web Directory Enumeration (Gobuster \& Owasp Dirbuster)}
+Avendo a portata di mano solo ed esclusivamente un web server, risulta fondamentale per il team individuare la directory tree del target, affinché sia possibile avviare l'attività di ispezione delle pagine accessibili pubblicamente e valutare la presenza di elementi interessanti durante la fase di analisi nonché condurre un'attività di directory bruteforcing.
+Utilizzando \texttt{gobuster} e due \textit{wordlist} (\texttt{common.txt} e \texttt{big.txt})
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\textwidth]{assets/academy_photo/targetEnumeration/directory_scanning_gobuster.jpeg}
+	\caption{Directory Brute-Forcing iniziale tramite Gobuster con l'ausilio della wordlist \texttt{common.txt}.}
+	\label{fig:gobuster_common}
+\end{figure}
+
+Con \texttt{common.txt} siamo riusciti a individuare due pagine accessibili:
+\begin{itemize}[label=\textcolor{black}{$\blacktriangleright$}, leftmargin=*]
+	\item \textbf{\texttt{admin}}, molto probabilmente un'area che potrebbe contenere informazioni sensibili sull'amministratore del server o sul server stesso, valutare un'ispezione manuale della pagine e del codice html.
+	\item  \textbf{\texttt{index.php}}, la pagina di default del server Apache (diventa tale quando si installa l'ambiente php ed ha priorità maggiore rispetto a \texttt{index.html}).
+\end{itemize}
+Sembra lecito utilizzare una wordlist un po' più grande (\texttt{big.txt}) e valutare la presenza di qualche pagina che può essere sfuggita in questa prima fase:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.65\textwidth]{assets/academy_photo/targetEnumeration/directory_scanning_pro.jpeg}
+	\caption{Directory Brute-Forcing esteso con Gobuster tramite la wordlist \texttt{big.txt}.}
+	\label{fig:gobuster_big}
+\end{figure}
+
+Questo secondo scan ha individuato una nuova pagina accessibile (\texttt{\textbf{/superadmin.php}}), che molto probabilmente rappresenta il fulcro dell'intera opera di Penetration Testing in quanto possibile interfaccia di amministrazione. Ma andiamo con calma e passiamo all'individuazione tramite \texttt{OWASP - Dirbuster} della gerarchia dei file del server ottenendo il seguente risultato:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{assets/academy_photo/targetEnumeration/dirscan_dirbuster.jpeg}
+	\caption{Schermata dei risultati strutturali in modalità Tree View estratti da OWASP DirBuster.}
+	\label{fig:dirbuster_gui_tree}
+\end{figure}
+
+Possiamo schematizzare l'output di Dirbuster con l'ausilio del seguente grafico ad albero e integrarlo con quello di gobuster per ottenere una panoramica del directory tree del web server accurata:
+
+\begin{figure}[htbp]
+	\centering
+	\begin{tcolorbox}[colback=white, colframe=headerblue, title=Mappatura Logica del Web Server (Output DirBuster), width=0.8\textwidth, fonttitle=\bfseries]
+		\dirtree{%
+			.1 / \DTcomment{\textcolor{ForestGreen}{\textbf{[200 OK]}}} .
+			.2 admin/ \DTcomment{\textcolor{ForestGreen}{\textbf{[200 OK]}}} .
+			.2 icons/ \DTcomment{\textcolor{zonered}{[403 Forbidden]}} .
+			.2 index.php \DTcomment{\textcolor{ForestGreen}{\textbf{[200 OK]}}} .
+			.3 small/ \DTcomment{\textcolor{zonered}{[403 Forbidden]}} .
+			.4 .ht* (file di sistema Apache) \DTcomment{\textcolor{zonered}{[403]}} .
+			.3 .ht* (file di sistema Apache) \DTcomment{\textcolor{zonered}{[403]}} .
+			.2 server-status \DTcomment{\textcolor{zonered}{[403 Forbidden]}} .
+			.2 superadmin.php/ \DTcomment{\textcolor{ForestGreen}{\textbf{[200 OK]}}} .
+			.2 .ht* (file di sistema Apache) \DTcomment{\textcolor{zonered}{[403]}} .
+		}
+	\end{tcolorbox}
+	\vspace{0.2cm}
+	\caption{Grafico strutturale definitivo della gerarchia dei file esposti dal server web del target.}
+	\label{fig:dirbuster_tree}
+\end{figure}
+L'analisi dell'albero evidenzia la presenza di tre pagine web, rappresentando di fatto la superficie d'attacco registrata e analizzabile dal team. Tutte queste pagine hanno restituito un codice di stato \textbf{200 OK}.
+	\section{Vulnerability Assessment}
+	
+	\section{Target Exploitation}
+	
+	\section{Privilege Escalation}
+	
+	\section{Maintaining Access}
+	
+	
+	%==================================================
+	%  3. FINAL CONSIDERATION
+	%==================================================
+	\chapter{Final Consideration}
+	
+	
+	%==================================================
+	%  4. REFERENCES
+	%==================================================
+	\chapter{References}
+		
+\end{document}

@@ -1,0 +1,366 @@
+\documentclass[11pt]{article}
+
+\usepackage[top=2.2cm,bottom=2cm,left=2cm,right=2cm,headheight=15pt]{geometry}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage[italian]{babel}
+\usepackage[colorlinks=true, linkcolor=black, urlcolor=blue!60!black, citecolor=black]{hyperref}
+
+\usepackage{booktabs}   % tabelle professionali
+\usepackage{array}      % colonne a larghezza fissa
+\usepackage[dvipsnames,table]{xcolor} % colori testuali + colori per tabelle
+\usepackage{colortbl}   % celle colorate
+\usepackage{enumitem}   % liste personalizzate
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{arydshln}
+\usepackage{tcolorbox}
+\usepackage{tikz}       % grafici nativi LaTeX
+
+%--------------------------------------------------
+%  Palette severità (coerente con la classificazione
+%  a colori richiesta: rosso = critico/elevato,
+%  arancione = medio, verde = basso/mitigato)
+%--------------------------------------------------
+\definecolor{zonegreen}{RGB}{0, 140, 0}
+\definecolor{zonered}{RGB}{180, 0, 0}
+\definecolor{sevCritico}{RGB}{150, 0, 0}
+\definecolor{sevElevato}{RGB}{200, 60, 30}
+\definecolor{sevMedio}{RGB}{220, 140, 0}
+\definecolor{sevBasso}{RGB}{0, 140, 0}
+\definecolor{headerblue}{RGB}{20, 40, 80}
+
+% Badge di severità riutilizzabile: \sev{colore}{etichetta}
+\newcommand{\sev}[2]{%
+  \setlength{\fboxsep}{3pt}%
+  \colorbox{#1}{\textcolor{white}{\small\textbf{#2}}}%
+}
+\newcommand{\sevCRIT}{\sev{sevCritico}{CRITICO}}
+\newcommand{\sevHIGH}{\sev{sevElevato}{ELEVATO}}
+\newcommand{\sevMED}{\sev{sevMedio}{MEDIO}}
+\newcommand{\sevLOW}{\sev{sevBasso}{BASSO}}
+
+\renewcommand{\contentsname}{Indice}
+\renewcommand{\sectionmark}[1]{\markboth{#1}{#1}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\nouppercase{\leftmark}}
+\fancyhead[R]{pagina \thepage\ di \pageref*{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\begin{document}
+
+%==================================================
+%  TITLE PAGE
+%==================================================
+\begin{titlepage}
+    \centering
+    % Logo robusto: usa l'SVG se presente, altrimenti non blocca la compilazione
+    \IfFileExists{logoUnisa(1).svg}{%
+        \includesvg[scale=1.5]{logoUnisa(1).svg}%
+    }{%
+        \IfFileExists{logoUnisa.pdf}{\includegraphics[width=0.45\textwidth]{logoUnisa.pdf}}{}%
+    }
+    \par
+    \vspace{3cm}
+
+    {\Huge \textbf{Penetration Testing Report}}\par
+    \vspace{0.5cm}
+    {\Large \textit{Academy - Cybersecurity}}\par
+    \vspace{0.5cm}
+    {\large Target: \texttt{no\_name}}\par
+
+    \vspace{6cm}
+
+    {\large \textbf{Gruppo 11}}\par
+    \vspace{0.15cm}
+    Emiddio Ferrentino - 0612708848\par
+    Daniele Manzo - 0612709599\par
+    Andrea Rossomando - 0612708971\par
+
+    \vspace{1cm}
+    {\Large A.A. 2025/2026}
+\end{titlepage}
+
+\thispagestyle{empty}
+\tableofcontents
+\newpage
+
+
+%==================================================
+%  1. EXECUTIVE SUMMARY
+%==================================================
+\section{Executive Summary}
+Il presente documento illustra i risultati dell'attività di Penetration Testing condotta dal Gruppo 11 sulla macchina virtuale vulnerabile denominata \textbf{``no\_name''}. L'obiettivo di questa sezione è fornire al management una panoramica chiara e non tecnica dello stato di sicurezza dell'infrastruttura analizzata, evidenziando i rischi di business e le azioni correttive prioritarie.
+
+\subsection{Scope del test}
+Il perimetro (Scope) dell'attività di valutazione è stato rigorosamente limitato all'infrastruttura e ai servizi esposti dalla macchina virtuale ``no\_name''. L'obiettivo principale è stato quello di simulare un attacco informatico realistico per identificare, sfruttare e documentare eventuali vulnerabilità, valutando la resilienza dei sistemi difensivi e l'efficacia delle configurazioni di sicurezza attuali.
+
+\subsection{Risultati ottenuti}
+L'attività di Penetration Testing ha avuto esito positivo dal punto di vista dell'attaccante. Il team è riuscito a compromettere interamente il bersaglio, ottenendo un accesso iniziale non autorizzato e, in una fase successiva, riuscendo a scalare i privilegi fino a ottenere il controllo totale del sistema con permessi di amministratore (\textit{root}). Questo dimostra che, allo stato attuale, l'infrastruttura è esposta a compromissioni critiche.
+
+\subsection{Problematiche rilevate}
+Le criticità che hanno portato alla compromissione del sistema derivano da due macro-aree:
+\begin{itemize}
+    \item \textbf{Debolezze Applicative:} sono state individuate gravi carenze nella validazione degli input forniti dagli utenti all'interno dell'applicazione web, che hanno permesso l'esecuzione di comandi malevoli direttamente sul server.
+    \item \textbf{Misconfigurazioni di Sistema:} la presenza di servizi infrastrutturali obsoleti o non necessari (es. servizi di stampa esposti) e l'errata configurazione dei permessi su alcuni file di sistema hanno facilitato l'escalation dei privilegi.
+\end{itemize}
+
+\subsection{Contromisure}
+Per ripristinare un adeguato livello di sicurezza, si raccomanda di intervenire tempestivamente con le seguenti azioni prioritarie:
+\begin{itemize}
+    \item Implementare rigorosi controlli di sicurezza (sanitizzazione e validazione) su tutti i dati in ingresso nell'applicazione web.
+    \item Disabilitare i servizi di sistema non strettamente necessari all'erogazione dell'applicativo web.
+    \item Applicare il principio del ``privilegio minimo'' (Least Privilege) rivedendo le autorizzazioni e i permessi dei file di sistema.
+\end{itemize}
+
+\subsection{Analisi del rischio}
+\subsubsection{Valutazione}
+Il rischio complessivo associato all'asset ``no\_name'' è classificato come \sevCRIT. Le vulnerabilità scoperte permettono a un attaccante esterno, senza credenziali valide, di prendere il pieno controllo del server, potendo esfiltrare dati, manipolare il sistema o utilizzarlo come ponte per attaccare altre macchine nella rete.
+
+\subsubsection{Riduzione}
+L'applicazione tempestiva delle remediation suggerite in questo documento abbatterà drasticamente la superficie d'attacco. Mitigando le vulnerabilità applicative e restringendo le configurazioni di sistema, il rischio residuo verrà riportato a un livello \sevLOW e fisiologicamente accettabile per l'operatività aziendale.
+
+
+%==================================================
+%  2. ENGAGEMENT HIGHLIGHTS
+%==================================================
+\section{Engagement Highlights}
+
+\subsection{Accordi preliminari}
+Le attività di Penetration Testing sono state concordate e autorizzate nell'ambito del corso di Cybersecurity Academy (A.A. 2025/2026). Il team di analisi, composto dai membri del Gruppo 11, ha ricevuto il mandato esclusivo di valutare l'asset ``no\_name'' operando in un ambiente di laboratorio isolato e controllato.
+
+\subsection{Requisiti legali e operativi}
+Tutte le operazioni offensive sono state condotte nel pieno rispetto del perimetro autorizzato. Nessun attacco è stato sferrato verso infrastrutture di terze parti, sistemi di produzione dell'Ateneo o indirizzi IP esterni al laboratorio. Il test è stato condotto con l'intento etico di scoprire e sanare le falle di sicurezza.
+
+\subsection{Modalità di esecuzione del Penetration Testing}
+L'attività è stata eseguita secondo un approccio \textit{Black-Box}. Il team di valutazione non disponeva di alcuna conoscenza pregressa sul funzionamento interno del sistema, sul codice sorgente o sulle configurazioni di rete, simulando così le condizioni operative di un reale attaccante esterno.
+
+\subsection{Metodologia adottata}
+L'intero processo di valutazione è stato guidato dal \textbf{Framework Generale per il Penetration Testing (FGPT)}. Questo standard metodologico ha garantito un approccio strutturato e riproducibile, scandito in fasi rigorose: dall'Information Gathering iniziale (fase di scoperta), passando per il Target Exploitation (sfruttamento), fino alla Privilege Escalation.
+
+\subsection{Date di inizio e fine attività}
+Le operazioni di test, comprensive di ricognizione, sfruttamento e stesura della documentazione, si sono svolte durante il periodo didattico assegnato. % [INSERIRE DATE: es. dal XX Maggio 2026 al XX Giugno 2026]
+
+\subsection{Obiettivi del test}
+L'obiettivo primario dell'ingaggio è stato duplice:
+\begin{enumerate}
+    \item Verificare la tenuta dell'applicazione web e del sistema operativo sottostante contro attacchi mirati.
+    \item Produrre un report analitico che fornisse ai responsabili IT le linee guida tecniche per la risoluzione definitiva delle vulnerabilità scoperte.
+\end{enumerate}
+
+\subsection{Ruoli, obblighi e responsabilità}
+\begin{itemize}
+    \item \textbf{Gruppo 11 (Red Team / Analisti):} responsabili della conduzione tecnica dei test, dell'identificazione delle vulnerabilità di sicurezza e della stesura del presente report.
+    \item \textbf{Committente (Docenza):} responsabile della fornitura dell'ambiente di test e della valutazione finale delle metodologie applicate e dei risultati ottenuti.
+\end{itemize}
+
+
+%==================================================
+%  3. VULNERABILITY REPORT
+%==================================================
+\section{Vulnerability Report}
+In questa sezione vengono descritte le vulnerabilità identificate durante l'attività di Penetration Testing. Per ciascuna criticità viene fornita una panoramica generale, l'impatto sulla sicurezza e la valutazione dell'esposizione dell'asset, al fine di far comprendere i rischi operativi anche a un pubblico non strettamente tecnico.
+
+% --- VULNERABILITA 1 ---
+\subsection{VULN-01: Command Injection (Esecuzione di Codice Remoto) \hfill \sevCRIT}
+\subsubsection{Descrizione della vulnerabilità}
+È stata individuata una grave vulnerabilità di tipo \textit{Command Injection} (Iniezione di Comandi) all'interno dell'applicazione web, nello specifico nella pagina di amministrazione (\texttt{/superadmin.php}). L'applicativo richiede all'utente di inserire un indirizzo IP per effettuare un test di connettività (ping), ma non convalida né filtra correttamente i caratteri speciali inseriti.
+
+\subsubsection{Impatto sulla sicurezza}
+L'impatto di questa vulnerabilità è \textbf{Critico}. Sfruttando questa falla, un attaccante può iniettare comandi di sistema operativi arbitrari (Linux) che il web server eseguirà come se fossero legittimi.
+
+\subsubsection{Valutazione esposizione}
+L'esposizione per l'organizzazione è massima. Tramite questa iniezione, il team di test è riuscito a stabilire una connessione inversa (\textit{Reverse Shell}), ottenendo l'accesso interattivo al file system del server con i privilegi dell'utente web (\texttt{www-data}). Questa compromissione iniziale costituisce il ``piede di porco'' (foothold) ideale per lanciare successivi attacchi volti all'escalation dei privilegi.
+
+% --- VULNERABILITA 2 ---
+\subsection{VULN-02: Remote Unauthenticated Printer Registration (CUPS CVE-2024-47176) \hfill \sevHIGH}
+\subsubsection{Descrizione della vulnerabilità}
+Durante la fase di enumerazione infrastrutturale, lo scanner di vulnerabilità Nessus ha rilevato che il servizio di stampa \textit{CUPS} (Common UNIX Printing System), esposto sulla porta 631, risulta vulnerabile alla CVE-2024-47176. Il demone \texttt{cups-browsed} accetta pacchetti UDP non autenticati da qualsiasi fonte esterna.
+
+\subsubsection{Impatto sulla sicurezza}
+L'impatto è \textbf{Elevato}. Un attaccante può inviare un pacchetto malevolo per forzare il server a registrare una ``stampante fantasma'' sotto il suo controllo. Quando il sistema tenta di elaborare i lavori di stampa verso tale dispositivo, l'attaccante può forzare l'esecuzione di codice remoto (RCE) a livello di infrastruttura.
+
+\subsubsection{Valutazione esposizione}
+Le conseguenze operative sono gravi. Trattandosi di un servizio di sistema indipendente dall'applicazione web, questa vulnerabilità espone il server a compromissioni dirette anche nel caso in cui il sito web venga messo offline o corretto. Rivela inoltre una scarsa igiene informatica, poiché un server web esposto al pubblico non dovrebbe ospitare servizi di rete locale (come quelli di stampa) attivi e non protetti da firewall.
+
+% --- VULNERABILITA 3 ---
+\subsection{VULN-03: Security Misconfiguration (Clickjacking e Header HTTP mancanti) \hfill \sevMED}
+\subsubsection{Descrizione della vulnerabilità}
+L'analisi automatizzata tramite Nikto e Nessus ha evidenziato diverse carenze nella configurazione del server web Apache. Il server non implementa gli header di sicurezza HTTP raccomandati dagli standard moderni, in particolare mancano gli header \texttt{X-Frame-Options}, \texttt{Content-Security-Policy} e \texttt{Strict-Transport-Security} (HSTS).
+
+\subsubsection{Impatto sulla sicurezza}
+L'impatto è \textbf{Medio/Basso}. L'assenza di questi header non permette una compromissione diretta del server, ma indebolisce le difese del browser dell'utente finale. In particolare, la mancanza di policy anti-framing rende l'applicazione vulnerabile al \textit{Clickjacking} (UI Redress Attack), permettendo a un sito malevolo di incorporare le pagine di \texttt{no\_name} all'interno di frame invisibili.
+
+\subsubsection{Valutazione esposizione}
+Sebbene l'esposizione diretta del server sia nulla, le conseguenze ricadono sugli utenti legittimi dell'applicazione. Un attaccante potrebbe indurre la vittima a compiere azioni non volute (es. cliccare su pulsanti sensibili) credendo di interagire con una pagina sicura, minando la fiducia nel servizio e compromettendo l'integrità delle sessioni client-side.
+
+% NOTA PER IL TEAM: l'Executive Summary dichiara di aver ottenuto privilegi di
+% root sfruttando "permessi errati su file di sistema". Questa fase di Privilege
+% Escalation non è ancora documentata come vulnerabilità. Valutare l'aggiunta di
+% una VULN-04 (es. binario SUID, sudoers, cron job scrivibile, ecc.) per rendere
+% coerente la catena di attacco descritta. Sezione segnaposto qui sotto.
+%
+% \subsection{VULN-04: Privilege Escalation (www-data -> root) \hfill \sevCRIT}
+% \subsubsection{Descrizione della vulnerabilità}
+% [DA COMPLETARE: descrivere il vettore esatto usato per ottenere root.]
+% \subsubsection{Impatto sulla sicurezza}
+% [DA COMPLETARE]
+% \subsubsection{Valutazione esposizione}
+% [DA COMPLETARE]
+
+
+%==================================================
+%  4. REMEDIATION REPORT
+%==================================================
+\section{Remediation Report}
+Questa sezione è destinata al \textbf{management e ai responsabili delle policy di sicurezza}. L'obiettivo è tradurre le criticità tecniche in azioni correttive concrete e prioritizzate, con un linguaggio chiaro e strutturato, così da ridurre il rischio complessivo e rafforzare la postura di sicurezza dell'asset ``no\_name''.
+
+\subsection{Obiettivo}
+L'obiettivo della remediation è duplice: (i) eliminare i vettori che consentono la compromissione totale del sistema (Command Injection e RCE infrastrutturale) e (ii) rafforzare le configurazioni difensive residue (header HTTP, principio del privilegio minimo). Le contromisure sono ordinate per priorità, dalla più urgente alla meno critica.
+
+\subsection{Raccomandazioni di sicurezza}
+
+\subsubsection{VULN-01 — Command Injection \hfill Priorità: \sevCRIT}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Validazione dell'input:} applicare una whitelist rigorosa sul campo IP, accettando esclusivamente formati IPv4/IPv6 validi (es. tramite \texttt{filter\_var(\$ip, FILTER\_VALIDATE\_IP)}).
+    \item \textbf{Evitare l'esecuzione di shell:} sostituire le chiamate a funzioni come \texttt{shell\_exec()}/\texttt{system()} con librerie native o, se indispensabili, utilizzare \texttt{escapeshellarg()} su ogni parametro.
+    \item \textbf{Privilegio minimo del processo web:} eseguire il web server con un utente dedicato e privo di permessi superflui.
+\end{itemize}
+
+\subsubsection{VULN-02 — CUPS CVE-2024-47176 \hfill Priorità: \sevHIGH}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Disabilitare il servizio:} arrestare e disabilitare \texttt{cups-browsed} se la stampa di rete non è necessaria (\texttt{systemctl disable --now cups-browsed}).
+    \item \textbf{Aggiornamento:} applicare le patch di sicurezza per CUPS che risolvono la CVE-2024-47176 e le CVE correlate.
+    \item \textbf{Hardening di rete:} bloccare via firewall la porta 631/UDP da sorgenti non fidate.
+\end{itemize}
+
+\subsubsection{VULN-03 — Security Headers mancanti \hfill Priorità: \sevMED}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Anti-framing:} impostare \texttt{X-Frame-Options: DENY} (o \texttt{frame-ancestors 'none'} via CSP).
+    \item \textbf{Content-Security-Policy:} definire una policy restrittiva per mitigare XSS e injection lato client.
+    \item \textbf{HSTS:} abilitare \texttt{Strict-Transport-Security} per forzare il traffico su HTTPS.
+\end{itemize}
+
+
+%==================================================
+%  5. FINDINGS SUMMARY
+%==================================================
+\section{Findings Summary}
+Questa sezione fornisce una sintesi visiva e strutturata delle evidenze emerse dal Penetration Testing, a supporto sia della comprensione complessiva sia dell'attività di remediation tecnica.
+
+\subsection{Dettaglio dei risultati}
+La tabella seguente riepiloga le vulnerabilità identificate, la relativa severità e lo stato di sfruttamento.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{>{\centering\arraybackslash}p{1.6cm} p{6.5cm} >{\centering\arraybackslash}p{2.6cm} >{\centering\arraybackslash}p{2.2cm}}
+\toprule
+\textbf{ID} & \textbf{Vulnerabilità} & \textbf{Severità} & \textbf{Sfruttata} \\
+\midrule
+VULN-01 & Command Injection (RCE) — \texttt{/superadmin.php} & \sevCRIT & Sì \\
+VULN-02 & CUPS Unauth. Printer Registration (CVE-2024-47176) & \sevHIGH & No\textsuperscript{*} \\
+VULN-03 & Security Misconfiguration (Clickjacking / Header) & \sevMED & No \\
+\bottomrule
+\end{tabular}
+\caption{Riepilogo delle vulnerabilità identificate. \textsuperscript{*}Rilevata tramite scanner; non sfruttata attivamente nel perimetro del test.}
+\end{table}
+
+\subsection{Grafici e visualizzazioni}
+La distribuzione delle vulnerabilità per livello di severità è riportata di seguito.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[yscale=1.3]
+    % Assi
+    \draw[->] (0,0) -- (0,3.4) node[above]{\footnotesize N. vuln.};
+    \draw[->] (0,0) -- (9.2,0);
+    % Griglia e tick Y
+    \foreach \y in {1,2,3}{
+        \draw[gray!30] (0,\y) -- (9,\y);
+        \node[left] at (-0.1,\y) {\footnotesize \y};
+    }
+    \node[left] at (-0.1,0) {\footnotesize 0};
+    % Barre: (x_centro, altezza, colore, etichetta)
+    \foreach \x/\h/\c/\lab in {1.2/1/sevCritico/Critico, 3.4/1/sevElevato/Elevato, 5.6/1/sevMedio/Medio, 7.8/0/sevBasso/Basso}{
+        \ifdim\h pt>0pt
+            \fill[\c] (\x-0.55,0) rectangle (\x+0.55,\h);
+            \node[above, font=\footnotesize] at (\x,\h) {\h};
+        \else
+            \node[above, font=\footnotesize] at (\x,0) {0};
+        \fi
+        \node[below, font=\footnotesize] at (\x,-0.05) {\lab};
+    }
+\end{tikzpicture}
+\caption{Distribuzione delle vulnerabilità per livello di severità.}
+\end{figure}
+
+\subsection{Focus tecnico}
+Dal punto di vista tecnico, il rischio è concentrato sulla \textbf{VULN-01}, che fornisce un accesso interattivo diretto al sistema (foothold) ed è la leva primaria dell'intera catena di compromissione. La \textbf{VULN-02} rappresenta un vettore di RCE indipendente dall'applicazione web e quindi persistente anche a fronte di correzioni applicative. La \textbf{VULN-03} ha impatto prevalentemente lato client.
+
+\subsection{Supporto alla remediation}
+La priorità operativa è la messa in sicurezza dell'input applicativo (VULN-01), seguita dalla riduzione della superficie di attacco infrastrutturale (VULN-02) e infine dall'hardening degli header HTTP (VULN-03). Il dettaglio delle contromisure è riportato nella sezione \ref{sec:detailed}.
+
+
+%==================================================
+%  6. DETAILED SUMMARY
+%==================================================
+\section{Detailed Summary}
+\label{sec:detailed}
+Questa sezione è rivolta al \textbf{security team e agli sviluppatori}. Per ogni vulnerabilità rilevata vengono dettagliati la modalità di scoperta, le cause principali, i rischi/impatti e le contromisure tecniche.
+
+\subsection{Classificazione del rischio}
+La severità delle vulnerabilità è rappresentata tramite la seguente codifica a colori:
+\begin{center}
+\begin{tabular}{c l}
+\sevCRIT~/~\sevHIGH & Rischio critico / elevato — intervento immediato \\[4pt]
+\sevMED & Rischio medio — intervento pianificato \\[4pt]
+\sevLOW & Rischio basso / mitigato — monitoraggio \\
+\end{tabular}
+\end{center}
+
+\subsection{VULN-01: Command Injection \hfill \sevCRIT}
+\begin{description}[leftmargin=2.4cm, style=nextline]
+    \item[Scoperta] Analisi manuale della pagina \texttt{/superadmin.php}; il campo di input ``IP'' per il ping è stato testato con metacaratteri di shell (es. \texttt{;}, \texttt{|}, \texttt{\&\&}), ottenendo l'esecuzione di comandi arbitrari.
+    \item[Cause] Mancata validazione/sanitizzazione dell'input e concatenazione diretta del parametro in una chiamata di shell lato server.
+    \item[Rischi e impatti] Esecuzione di codice remoto come \texttt{www-data}; reverse shell interattiva; punto di ingresso per la privilege escalation verso \texttt{root}.
+    \item[Contromisure] Whitelist sul formato IP (\texttt{FILTER\_VALIDATE\_IP}); uso di \texttt{escapeshellarg()}; eliminazione delle chiamate a shell ove possibile; privilegio minimo del processo web.
+\end{description}
+
+\subsection{VULN-02: CUPS — CVE-2024-47176 \hfill \sevHIGH}
+\begin{description}[leftmargin=2.4cm, style=nextline]
+    \item[Scoperta] Scansione con Nessus durante l'enumerazione infrastrutturale; rilevato \texttt{cups-browsed} in ascolto sulla porta 631/UDP.
+    \item[Cause] Demone \texttt{cups-browsed} che accetta pacchetti UDP non autenticati da qualsiasi sorgente; servizio non necessario esposto pubblicamente.
+    \item[Rischi e impatti] Registrazione di una stampante malevola e potenziale RCE a livello di sistema operativo, indipendente dall'applicazione web.
+    \item[Contromisure] Disabilitazione del servizio se inutilizzato; patching della CVE; restrizione firewall sulla porta 631/UDP.
+\end{description}
+
+\subsection{VULN-03: Security Misconfiguration \hfill \sevMED}
+\begin{description}[leftmargin=2.4cm, style=nextline]
+    \item[Scoperta] Scansione automatizzata con Nikto e Nessus sul server Apache.
+    \item[Cause] Assenza degli header di sicurezza \texttt{X-Frame-Options}, \texttt{Content-Security-Policy} e \texttt{Strict-Transport-Security}.
+    \item[Rischi e impatti] Esposizione al Clickjacking e indebolimento delle difese lato browser; nessuna compromissione diretta del server.
+    \item[Contromisure] Configurazione degli header di sicurezza a livello di Apache (anti-framing, CSP, HSTS).
+\end{description}
+
+
+%==================================================
+%  7. REFERENCES
+%==================================================
+\section{References}
+\begin{itemize}[leftmargin=*]
+    \item NIST CVE-2024-47176 — \href{https://nvd.nist.gov/vuln/detail/CVE-2024-47176}{nvd.nist.gov/vuln/detail/CVE-2024-47176}
+    \item OWASP — Command Injection: \href{https://owasp.org/www-community/attacks/Command_Injection}{owasp.org/www-community/attacks/Command\_Injection}
+    \item OWASP — Clickjacking Defense Cheat Sheet.
+    \item OWASP — Secure Headers Project: \href{https://owasp.org/www-project-secure-headers/}{owasp.org/www-project-secure-headers}
+    \item FGPT — Framework Generale per il Penetration Testing (materiale del corso, Dott.\ V.\ Esposito).
+    \item Strumenti utilizzati: Nmap, Nessus, Nikto. % [INTEGRARE con gli strumenti effettivamente usati]
+\end{itemize}
+
+
+\end{document}
