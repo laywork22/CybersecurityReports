@@ -13,7 +13,7 @@
 \contentsline {section}{\numberline {2.2}Requisiti legali e operativi}{6}{section.2.2}%
 \contentsline {section}{\numberline {2.3}Modalità di esecuzione del Penetration Testing}{6}{section.2.3}%
 \contentsline {section}{\numberline {2.4}Metodologia adottata}{6}{section.2.4}%
-\contentsline {section}{\numberline {2.5}Date di inizio e fine attività}{6}{section.2.5}%
+\contentsline {section}{\numberline {2.5}Date di inizio e fine attività}{7}{section.2.5}%
 \contentsline {section}{\numberline {2.6}Obiettivi del test}{7}{section.2.6}%
 \contentsline {section}{\numberline {2.7}Ruoli, obblighi e responsabilità}{7}{section.2.7}%
 \contentsline {chapter}{\numberline {3}Vulnerability Report}{8}{chapter.3}%
@@ -29,16 +29,16 @@
 \contentsline {subsection}{\numberline {3.3.1}Descrizione della vulnerabilità}{9}{subsection.3.3.1}%
 \contentsline {subsection}{\numberline {3.3.2}Impatto sulla sicurezza}{9}{subsection.3.3.2}%
 \contentsline {subsection}{\numberline {3.3.3}Valutazione esposizione}{9}{subsection.3.3.3}%
-\contentsline {section}{\numberline {3.4}Security Misconfiguration - MEDIUM}{9}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Descrizione della vulnerabilità}{9}{subsection.3.4.1}%
+\contentsline {section}{\numberline {3.4}Security Misconfiguration - MEDIUM}{10}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Descrizione della vulnerabilità}{10}{subsection.3.4.1}%
 \contentsline {subsection}{\numberline {3.4.2}Impatto sulla sicurezza}{10}{subsection.3.4.2}%
 \contentsline {subsection}{\numberline {3.4.3}Valutazione esposizione}{10}{subsection.3.4.3}%
 \contentsline {section}{\numberline {3.5}Sensitive Data Exposure - MEDIUM}{10}{section.3.5}%
-\contentsline {subsubsection}{Descrizione della vulnerabilità}{10}{section*.3}%
-\contentsline {subsection}{\numberline {3.5.1}Impatto sulla sicurezza}{10}{subsection.3.5.1}%
-\contentsline {subsection}{\numberline {3.5.2}Valutazione esposizione}{10}{subsection.3.5.2}%
-\contentsline {section}{\numberline {3.6}Information Disclosure - LOW}{10}{section.3.6}%
-\contentsline {subsection}{\numberline {3.6.1}Descrizione della vulnerabilità}{10}{subsection.3.6.1}%
+\contentsline {subsection}{\numberline {3.5.1}Descrizione della vulnerabilità}{10}{subsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.5.2}Impatto sulla sicurezza}{10}{subsection.3.5.2}%
+\contentsline {subsection}{\numberline {3.5.3}Valutazione esposizione}{10}{subsection.3.5.3}%
+\contentsline {section}{\numberline {3.6}Information Disclosure - LOW}{11}{section.3.6}%
+\contentsline {subsection}{\numberline {3.6.1}Descrizione della vulnerabilità}{11}{subsection.3.6.1}%
 \contentsline {subsection}{\numberline {3.6.2}Impatto sulla sicurezza}{11}{subsection.3.6.2}%
 \contentsline {subsection}{\numberline {3.6.3}Valutazione esposizione}{11}{subsection.3.6.3}%
 \contentsline {chapter}{\numberline {4}Remediation Report}{12}{chapter.4}%
@@ -60,8 +60,8 @@
 \contentsline {section}{\numberline {6.1}Classificazione del rischio}{17}{section.6.1}%
 \contentsline {section}{\numberline {6.2}Command Injection}{17}{section.6.2}%
 \contentsline {section}{\numberline {6.3}Local Privilege Escalation}{18}{section.6.3}%
-\contentsline {section}{\numberline {6.4}CUPS Vulnerability}{18}{section.6.4}%
+\contentsline {section}{\numberline {6.4}CUPS Vulnerability}{19}{section.6.4}%
 \contentsline {section}{\numberline {6.5}Security Misconfiguration}{19}{section.6.5}%
-\contentsline {section}{\numberline {6.6}Sensitive Data Exposure}{19}{section.6.6}%
-\contentsline {section}{\numberline {6.7}Information Disclosure}{20}{section.6.7}%
-\contentsline {chapter}{\numberline {7}Bibliografia}{21}{chapter.7}%
+\contentsline {section}{\numberline {6.6}Sensitive Data Exposure}{20}{section.6.6}%
+\contentsline {section}{\numberline {6.7}Information Disclosure}{21}{section.6.7}%
+\contentsline {chapter}{\numberline {7}Bibliografia}{22}{chapter.7}%

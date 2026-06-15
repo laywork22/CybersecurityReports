@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.6.11)  14 JUN 2026 16:56
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.6.11)  15 JUN 2026 14:14
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -953,10 +953,10 @@ Package hyperref Info: Link coloring ON on input line 51.
 \openout4 = `PTReportV2.out'.
 
 Package svg Info: Last page of `./svg-inkscape/logoUnisa(1)_svg-tex.pdf' is 1 o
-n input line 63.
+n input line 62.
 
 (./svg-inkscape/logoUnisa(1)_svg-tex.pdf_tex
-<./svg-inkscape/logoUnisa(1)_svg-tex.pdf, id=265, page=1, 210.78682pt x 85.8206
+<./svg-inkscape/logoUnisa(1)_svg-tex.pdf, id=269, page=1, 210.78682pt x 85.8206
 2pt>
 File: ./svg-inkscape/logoUnisa(1)_svg-tex.pdf Graphic file (type pdf)
 <use ./svg-inkscape/logoUnisa(1)_svg-tex.pdf, page 1>
@@ -972,7 +972,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.99 	\newpage
+l.96 	\newpage
                [1] (./PTReportV2.toc
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <10.95> on input line 4.
@@ -992,7 +992,7 @@ Capitolo 1.
 
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}]
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 145.
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 143.
 
 [5]
 Capitolo 2.
@@ -1002,15 +1002,56 @@ Capitolo 2.
 Capitolo 3.
 [8
 
-] [9] [10] [11]
+]
+Overfull \hbox (7.36089pt too wide) in paragraph at lines 219--219
+[]\T1/cmr/bx/n/14.4 VULN-03: CUPS Unau-then-ti-cat-ed Re-mote Reg-is-tra-tion (
+CVE-2024-
+ []
+
+
+Overfull \hbox (25.31787pt too wide) in paragraph at lines 232--233
+\T1/cmr/m/n/10.95 equiv-a-lente di-ret-ti-va CSP \T1/cmtt/m/n/10.95 frame-ances
+tors\T1/cmr/m/n/10.95 ), \T1/cmtt/m/n/10.95 Content-Security-Policy \T1/cmr/m/n
+/10.95 (CSP), \T1/cmtt/m/n/10.95 Strict-Transport-Security
+ []
+
+[9]
+Overfull \hbox (0.27354pt too wide) in paragraph at lines 243--244
+\T1/cmr/m/n/10.95 ela l'ind-i-riz-zo esat-to di un pan-nel-lo am-min-is-tra-ti-
+vo di liv-el-lo su-pe-ri-ore non doc-u-men-ta-to (\T1/cmtt/m/n/10.95 superadmin
+.php\T1/cmr/m/n/10.95 ).
+ []
+
+
+Overfull \hbox (14.66444pt too wide) in paragraph at lines 243--244
+\T1/cmr/m/n/10.95 A queste si ag-giunge la pre-sen-za di una pass-word in chiar
+o in un file di sis-tema (\T1/cmtt/m/n/10.95 /usr/share/hidden/.passwd\T1/cmr/m
+/n/10.95 ),
+ []
+
+[10] [11]
 Capitolo 4.
+
+Overfull \hbox (1.98294pt too wide) in paragraph at lines 290--291
+[]\T1/cmr/bx/n/10.95 Disabilitazione dei servizi su-per-flui: \T1/cmr/m/n/10.95
+ ar-restare e dis-abil-itare defini-ti-va-mente il de-mone \T1/cmtt/m/n/10.95 c
+ups-browsed
+ []
+
+
+Overfull \hbox (19.31737pt too wide) in paragraph at lines 290--291
+\T1/cmr/m/n/10.95 tramite il ge-store di servizi di sis-tema (es. \T1/cmtt/m/n/
+10.95 systemctl disable cups-browsed.service\T1/cmr/m/n/10.95 ), poiché l'eroga
+zione
+ []
+
 [12
 
 ]
-Overfull \hbox (68.78351pt too wide) in paragraph at lines 314--315
-[]\T1/cmr/bx/n/10.95 Filtro TCP Times-tamp: \T1/cmr/m/n/10.95 Va-l-utare la dis
--abil-i-tazione del-l'esten-sione TCP Times-tamp (\T1/cmtt/m/n/10.95 net.ipv4.t
-cp_timestamps=0\T1/cmr/m/n/10.95 )
+Overfull \hbox (111.738pt too wide) in paragraph at lines 314--315
+[]\T1/cmr/bx/n/10.95 Disabilitazione TCP Times-tamp: \T1/cmr/m/n/10.95 va-l-uta
+re la dis-abil-i-tazione del-l'esten-sione TCP Times-tamp (\T1/cmtt/m/n/10.95 n
+et.ipv4.tcp_timestamps=0
  []
 
 [13]
@@ -1027,28 +1068,57 @@ pdfTeX warning (ext4): destination with the same identifier (name{table.5.1}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.446 	\section
-               {Supporto alla remediation}
+l.433 	
+       
 pdfTeX warning (ext4): destination with the same identifier (name{figure.5.1}) 
 has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.446 	\section
-               {Supporto alla remediation}]
-Overfull \hbox (7.50246pt too wide) in paragraph at lines 449--450
-\T1/cmr/m/n/10.95 Dock-er) o \T1/cmr/m/it/10.95 ch-root\T1/cmr/m/n/10.95 , e im
--ple-mentare re-gole \T1/cmr/m/it/10.95 ipt-a-bles \T1/cmr/m/n/10.95 di \T1/cmr
-/m/it/10.95 default-deny \T1/cmr/m/n/10.95 per chi-ud-ere qual-si-asi por-ta UD
-P/TCP
+l.433 	
+       ] [16]
+Capitolo 6.
+
+Underfull \hbox (badness 2970) in paragraph at lines 455--457
+\T1/cmr/m/n/10.95 La vul-ner-a-bil-ità è sta-ta iden-ti-fi-ca-ta du-rante l'is-
+pezione man-uale del form del-la pag-i-na
  []
 
-[16]
-Capitolo 6.
 [17
 
-] [18] [19] [20]
+]
+Underfull \hbox (badness 7704) in paragraph at lines 492--494
+\T1/cmr/m/n/10.95 È nec-es-sario in-ter-venire su en-tram-bi i pi-ani del-la vu
+l-ner-a-bil-ità: rimuo-vere il file
+ []
+
+
+Overfull \hbox (7.36089pt too wide) in paragraph at lines 497--497
+[]\T1/cmr/bx/n/14.4 VULN-03: CUPS Unau-then-ti-cat-ed Re-mote Reg-is-tra-tion (
+CVE-2024-
+ []
+
+[18]
+Underfull \hbox (badness 10000) in paragraph at lines 528--530
+\T1/cmtt/m/n/10.95 Content-Security-Policy\T1/cmr/m/n/10.95 , \T1/cmtt/m/n/10.9
+5 Strict-Transport-Security\T1/cmr/m/n/10.95 , \T1/cmtt/m/n/10.95 X-Content-Typ
+e-Options\T1/cmr/m/n/10.95 ,
+ []
+
+[19]
+Underfull \hbox (badness 10000) in paragraph at lines 560--562
+\T1/cmr/m/n/10.95 Rimuovere im-me-di-ata-mente le im-mag-i-ni con-te-nen-ti pay
+-load steganografi-ci e il file
+ []
+
+
+Underfull \hbox (badness 1430) in paragraph at lines 560--562
+\T1/cmtt/m/n/10.95 /usr/share/hidden/.passwd\T1/cmr/m/n/10.95 . L'ac-ces-so ad 
+aree am-min-is-tra-tive deve es-sere im-ple-men-ta-to
+ []
+
+[20] [21]
 Capitolo 7.
-[21
+[22
 
 ] 
 enddocument/afterlastpage (AED): lastpage setting LastPage.
@@ -1058,32 +1128,31 @@ LaTeX2e <2025-11-01>
 L3 programming layer <2026-03-20>
  ***********
 Package rerunfilecheck Info: File `PTReportV2.out' has not changed.
-(rerunfilecheck)             Checksum: 3384E2C83F5A0A1624D6468C0F7C473F;11535.
+(rerunfilecheck)             Checksum: E23459F6A9F3E852A8755D561EB1B8AD;11761.
  ) 
 Here is how much of TeX's memory you used:
- 28332 strings out of 469296
- 560227 string characters out of 5465561
- 1045382 words of memory out of 6000000
- 56567 multiletter control sequences out of 15000+600000
- 641236 words of font info for 65 fonts, out of 8000000 for 9000
+ 28343 strings out of 469296
+ 560366 string characters out of 5465561
+ 1045466 words of memory out of 6000000
+ 56575 multiletter control sequences out of 15000+600000
+ 640535 words of font info for 64 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  94i,12n,108p,1118b,989s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/cm-super/sfbi1095.pfb></usr
-/share/texlive/texmf-dist/fonts/type1/public/cm-super/sfbx1095.pfb></usr/share/
-texlive/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texlive
-/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/cm-super/sfbx2074.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/public/cm-super/sfbx2488.pfb></usr/share/texlive/texmf-dist/fonts/typ
-e1/public/cm-super/sfrm1095.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
-ic/cm-super/sfrm1200.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/cm-s
-uper/sfrm1440.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/cm-super/sf
-ti1095.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/cm-super/sfti1440.
-pfb></usr/share/texlive/texmf-dist/fonts/type1/public/cm-super/sftt1095.pfb></u
-sr/share/texlive/texmf-dist/fonts/type1/public/cm-super/sftt1200.pfb>
-Output written on PTReportV2.pdf (22 pages, 375571 bytes).
+</usr/share/texlive/texmf-dist/fonts/type1/public/cm-super/sfbx1095.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/cm-super/sfbx2074.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/cm-super/sfbx2488.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/cm-super/sfrm1095.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/public/cm-super/sfrm1200.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/cm-super/sfrm1440.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/cm-s
+uper/sfti1095.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/cm-super/sf
+ti1440.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/cm-super/sftt1095.
+pfb></usr/share/texlive/texmf-dist/fonts/type1/public/cm-super/sftt1200.pfb>
+Output written on PTReportV2.pdf (23 pages, 358302 bytes).
 PDF statistics:
- 559 PDF objects out of 1000 (max. 8388607)
- 497 compressed objects within 5 object streams
- 104 named destinations out of 1000 (max. 500000)
- 535 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 581 PDF objects out of 1000 (max. 8388607)
+ 519 compressed objects within 6 object streams
+ 108 named destinations out of 1000 (max. 500000)
+ 543 words of extra memory for PDF output out of 10000 (max. 10000000)
 
