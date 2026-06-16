@@ -3,7 +3,7 @@
 \usepackage[top=2.2cm,bottom=2cm,left=2cm,right=2cm,headheight=15pt]{geometry}
 \usepackage{graphicx}
 \usepackage{svg}
-\usepackage{fancyhdr}    
+\usepackage{fancyhdr}   
 \usepackage{lastpage}
 \usepackage[italian]{babel}
 \usepackage{datetime}
@@ -83,9 +83,6 @@
 	
 	\thispagestyle{empty}
 	
-	%==================================================
-	%  SOMMARIO
-	%==================================================
 	\section*{Sommario}
 	Questo documento riporta i risultati dell'attività di Penetration Testing condotta dal Gruppo 11 sull'infrastruttura virtuale \textbf{no\_name}, nell'ambito del corso di Cybersecurity Academy (A.A. 2025/2026). L'analisi ha seguito il \textbf{Framework Generale per il Penetration Testing (FGPT)}~\cite{ptes}, articolandosi nelle fasi di \textit{Information Gathering}, \textit{Vulnerability Assessment}, \textit{Target Exploitation} e \textit{Privilege Escalation}.
 	
@@ -97,9 +94,7 @@
 	\tableofcontents
 	\newpage
 	
-	%==================================================
-	%  1. EXECUTIVE SUMMARY
-	%==================================================
+
 	\chapter{Executive Summary}
 	Questa sezione presenta una sintesi non tecnica dello stato di sicurezza della macchina virtuale \textbf{no\_name}, rivolta al management e ai decisori del committente. Vengono evidenziati i rischi di business derivanti dalle vulnerabilità identificate e le azioni correttive prioritarie raccomandate.
 	
@@ -148,16 +143,13 @@
 		L'applicazione delle \textit{remediation} suggerite nel presente documento riduce significativamente la superficie d'attacco. Mitigando le vulnerabilità applicative e correggendo le configurazioni di sistema, il rischio residuo è atteso al livello \textbf{\texttt{BASSO}}, compatibile con i normali requisiti operativi.
 	\end{tcolorbox}
 	
-	%==================================================
-	%  2. ENGAGEMENT HIGHLIGHTS
-	%==================================================
 	\chapter{Engagement Highlights}
 	
 	\section{Accordi preliminari}
 	Le attività di Penetration Testing sono state concordate e autorizzate nell'ambito del corso di Cybersecurity Academy (A.A. 2025/2026). Il team di analisi, composto dai membri del Gruppo 11, ha ricevuto il mandato esclusivo di valutare l'asset \textbf{no\_name} operando in un ambiente di laboratorio isolato.
 	
 	\section{Requisiti legali e operativi}
-	Tutte le operazioni offensive sono state condotte nel rispetto del perimetro autorizzato. Non sono stati effettuati attacchi contro asset diversi dal target, e gli indirizzi IP estranei al perimetro definito sono stati esclusi da qualsiasi attività di analisi attiva. Le metodologie applicate sono coerenti con quanto previsto dal FGPT e con le \textit{Rules of Engagement} formalizzate prima dell'inizio dei test.
+	Tutte le operazioni offensive sono state condotte nel rispetto del perimetro autorizzato. Non sono stati effettuati attacchi contro asset diversi dal target, e gli indirizzi IP estranei al perimetro definito sono stati esclusi da qualsiasi attività di analisi attiva. Le metodologie applicate sono coerenti con quanto previsto dal FGPT e con le \textit{Rules of Engagement} formalizzate prima dell'inizio dei test. Al termine delle attività di verifica, il team ha inoltre provveduto a effettuare una rigorosa operazione di \textit{cleanup}, rimuovendo gli artefatti temporanei creati durante l'attacco (come la \textit{pipe} di sistema utilizzata per la \textit{reverse shell}) per restituire l'ambiente nel suo stato di integrità originale.
 	
 	\section{Modalità di esecuzione del Penetration Testing}
 	L'attività è stata eseguita secondo un approccio \textit{Black-Box}. Le uniche informazioni fornite dal creatore della macchina \texttt{no\_name} sono le seguenti:
@@ -190,109 +182,108 @@
 	%  3. VULNERABILITY REPORT
 	%==================================================
 	\chapter{Vulnerability Report}
-	In questa sezione vengono descritte le vulnerabilità identificate durante l'attività di Penetration Testing. Per ciascuna criticità sono forniti una descrizione generale, l'impatto sulla sicurezza e una valutazione dell'esposizione, al fine di rendere comprensibili i rischi operativi anche a un pubblico non strettamente tecnico. La classificazione di severità adotta una scala standard di settore, allineata alle linee guida OWASP~\cite{owasp-top10}.
+	In questa sezione vengono descritte le vulnerabilità identificate durante l'attività di Penetration Testing. Per ciascuna criticità sono forniti una descrizione generale, l'impatto sulla sicurezza e una valutazione dell'esposizione, al fine di rendere comprensibili i rischi operativi anche a un pubblico non strettamente tecnico. La severità di ciascuna vulnerabilità è riportata accanto al titolo della relativa sezione secondo la scala qualitativa definita nel Findings Summary (cfr. \S\ref{sec:convenzioni}).
 	
 	% --- VULNERABILITA 1 ---
-	\section[Command Injection - CRITICAL]{VULN-01: Command Injection \hfill \sevCRIT}
+	\section[Command Injection]{VULN-01: Command Injection \hfill \sevCRIT}
 	\subsection{Descrizione della vulnerabilità}
 	È stata individuata una vulnerabilità di tipo \textit{Command Injection}~\cite{owasp-injection} all'interno dell'applicazione web, nello specifico nella pagina di amministrazione \textbf{/superadmin.php}. La pagina contiene un form che accetta un input utente (un indirizzo IP) per effettuare un test di connettività tramite \texttt{ping}, ma non implementa meccanismi di validazione e filtraggio sufficienti a bloccare richieste contenenti metacaratteri di shell.
 	
 	\subsection{Impatto sulla sicurezza}
-	L'impatto sulla sicurezza è \sevCRIT. Sfruttando la falla, un attaccante può iniettare comandi arbitrari del sistema operativo all'interno della richiesta e indurre il web server a eseguirli con i privilegi del processo che ospita l'applicazione.
+	Sfruttando la falla, un attaccante può iniettare comandi arbitrari del sistema operativo all'interno della richiesta e indurre il web server a eseguirli con i privilegi del processo che ospita l'applicazione.
 	
 	\subsection{Valutazione esposizione}
-	L'esposizione è massima. Sfruttando questa \textit{injection}, il team è riuscito a ottenere una \textit{reverse shell} con accesso al file system del web server e privilegi dell'utente di servizio \texttt{www-data}, ovvero l'utente sotto cui gira il demone Apache che serve l'applicazione. Questa compromissione costituisce il \textit{foothold} ideale per condurre successive attività di \textit{Privilege Escalation}, fino all'ottenimento dei privilegi di amministratore di sistema (\textit{root}).
+	Sfruttando questa \textit{injection}, l'attaccante ottiene una \textit{reverse shell} silente che garantisce un accesso diretto al file system e alle logiche interne del server. Questa intrusione primaria scavalca le difese perimetrali e stabilisce il \textit{foothold} necessario per intraprendere operazioni di profilazione locale e movimento laterale.
 	
 	% --- VULNERABILITA 2 ---
-	\section[Local Privilege Escalation - CRITICAL]{VULN-02: Local Privilege Escalation (Sudoers Misconfiguration) \hfill \sevCRIT}
-	
+	\section[Local Privilege Escalation]{VULN-02: Local Privilege Escalation (Sudoers Misconfiguration) \hfill \sevCRIT}
 	\subsection{Descrizione della vulnerabilità}
 	Durante la fase di \textit{post-exploitation} sono state rilevate due criticità a livello di sistema operativo locale. La prima è la presenza di un file nascosto contenente in chiaro la password dell'utente \texttt{haclabs}. La seconda è una configurazione del file \texttt{/etc/sudoers} che autorizza il medesimo utente a eseguire il binario \texttt{/usr/bin/find} con privilegi di \textit{root} e senza richiesta di password (direttiva \texttt{NOPASSWD}).
 	
 	\subsection{Impatto sulla sicurezza}
-	L'impatto sulla sicurezza è \sevCRIT. La combinazione delle due misconfigurazioni consente a un attaccante che abbia ottenuto un accesso iniziale al sistema (ad esempio tramite la VULN-01) di elevare i propri privilegi fino al livello amministrativo. Il binario \texttt{find}, infatti, dispone nativamente del parametro \texttt{-exec}, che ne permette l'utilizzo per spawnare una shell di sistema.
+	La combinazione delle due misconfigurazioni consente a un attaccante che abbia ottenuto un accesso iniziale al sistema (ad esempio tramite la VULN-01) di elevare i propri privilegi fino al livello amministrativo. Il binario \texttt{find}, infatti, dispone nativamente del parametro \texttt{-exec}, che ne permette l'utilizzo per generare una shell di sistema autonoma.
 	
 	\subsection{Valutazione esposizione}
-	L'esposizione è massima. Questa vulnerabilità rappresenta l'anello finale della catena di attacco. Sfruttando i privilegi delegati al comando \texttt{find}, l'attaccante può generare una shell con permessi di \textit{root}, ottenendo il controllo amministrativo dell'asset, inclusa la possibilità di alterare i log di sistema per occultare le proprie tracce.
+	Questa vulnerabilità rappresenta l'anello finale della catena di attacco. Sfruttando i privilegi delegati, l'attaccante assume il controllo assoluto dell'infrastruttura, acquisendo la facoltà di leggere chiavi di crittografia, manipolare i demoni di sistema o alterare i file di log per neutralizzare le verifiche forensi.
 	
 	% --- VULNERABILITA 3 ---
-	\section[CUPS - HIGH]{VULN-03: CUPS Unauthenticated Remote Registration (CVE-2024-47176) \hfill \sevHIGH}
+	\section[CUPS Vulnerability]{VULN-03: CUPS Unauthenticated Remote Registration (CVE-2024-47176) \hfill \sevHIGH}
 	\subsection{Descrizione della vulnerabilità}
 	Durante la fase di analisi e mappatura dell'infrastruttura è stata rilevata l'esposizione del servizio di stampa di sistema \textbf{CUPS}, nello specifico del demone \textit{cups-browsed} in ascolto sulla porta 631 UDP. Il servizio è affetto dalla vulnerabilità pubblica CVE-2024-47176~\cite{cve-cups}, dovuta al fatto che il demone accetta e processa richieste di registrazione di stampanti senza alcuna autenticazione o verifica dell'identità del mittente.
 	
 	\subsection{Impatto sulla sicurezza}
-	L'impatto teorico della vulnerabilità è \sevHIGH. Un attaccante può inviare pacchetti IPP contraffatti annunciandosi come stampante fittizia sotto il proprio controllo. Successivamente, qualora un utente locale del sistema target avvii un \textit{print job} verso tale stampante, il sistema processa direttive PPD malevole che possono portare all'esecuzione di codice remoto (RCE) nel contesto del servizio di stampa.
+	Un attaccante può inviare pacchetti IPP contraffatti annunciandosi come stampante fittizia sotto il proprio controllo. Successivamente, qualora un utente locale del sistema target avvii un \textit{print job} verso tale stampante, il sistema processa direttive PPD malevole che possono portare all'esecuzione di codice remoto (RCE) nel contesto del servizio di stampa.
 	
 	\subsection{Valutazione esposizione}
-	L'esposizione architetturale è significativa: l'apertura di un servizio di stampa di sistema verso l'esterno costituisce una superficie d'attacco aggiuntiva e indipendente dall'applicazione web, ed evidenzia una postura difensiva carente. È importante segnalare, tuttavia, che nelle condizioni specifiche dell'ambiente di test la \textit{kill-chain} di sfruttamento non è risultata completabile: il trigger finale (l'avvio di un \textit{print job} da parte di un utente locale) non è simulabile in un laboratorio privo di utenti reali, come documentato nella sezione \textit{Target Exploitation} di \textit{Metodologie Utilizzate PT}. La vulnerabilità è quindi confermata architetturalmente e mantiene la severity \textbf{HIGH} ai fini della classificazione formale, pur essendo stata classificata come non sfruttabile nello scenario operativo specifico.
+	L'apertura di un servizio di stampa di sistema verso l'esterno espone il server ad attacchi mirati indipendenti dall'applicazione web. È importante segnalare, tuttavia, che nelle condizioni specifiche dell'ambiente di test la \textit{kill-chain} di sfruttamento non è risultata completabile: il trigger finale (l'avvio di un \textit{print job} da parte di un utente locale) non è simulabile in un laboratorio privo di utenti reali. La vulnerabilità è quindi confermata architetturalmente e mantiene la severity \textbf{HIGH} ai fini della classificazione formale, pur essendo stata classificata come non sfruttabile nello scenario operativo specifico.
 	
 	% --- VULNERABILITA 4 ---
-	\section[Security Misconfiguration - MEDIUM]{VULN-04: Security Misconfiguration (Header HTTP Mancanti) \hfill \sevMED}
+	\section[Security Misconfiguration]{VULN-04: Security Misconfiguration (Header HTTP Mancanti) \hfill \sevMED}
 	\subsection{Descrizione della vulnerabilità}
 	L'analisi automatizzata delle configurazioni del web server ha evidenziato la mancanza di diverse intestazioni (\textit{header}) di sicurezza HTTP. In particolare, il server non implementa le policy \texttt{X-Frame-Options} (o equivalente direttiva CSP \texttt{frame-ancestors}), \texttt{Content-Security-Policy} (CSP), \texttt{Strict-Transport-Security} (HSTS), \texttt{X-Content-Type-Options}, \texttt{Permissions-Policy} e \texttt{Referrer-Policy}. Queste intestazioni rappresentano lo standard moderno per istruire i browser su come proteggere i contenuti del sito web e i propri utenti.
 	
 	\subsection{Impatto sulla sicurezza}
-	L'impatto è \sevMED. L'assenza delle direttive anti-framing espone l'applicativo ad attacchi di tipo \textit{Clickjacking} (UI Redress Attack), nei quali un sito malevolo può incorporare le pagine di \textbf{no\_name} all'interno di un \texttt{iframe} reso semi-trasparente per ingannare l'utente legittimo. L'assenza di CSP facilita inoltre l'esecuzione di script non autorizzati lato client in caso di vulnerabilità XSS presenti o future.
+	La mancanza delle intestazioni di sicurezza espone gli utenti finali dell'applicazione web a manipolazioni lato client. Sfruttando questa debolezza, soggetti esterni possono forzare il browser delle vittime a eseguire azioni non autorizzate a loro nome o a rivelare i dati immessi nel portale aziendale.
 	
 	\subsection{Valutazione esposizione}
-	L'esposizione diretta dell'infrastruttura server è limitata: i rischi ricadono principalmente sui client dell'applicazione web. Un attaccante potrebbe indurre con l'inganno un operatore legittimo a compiere azioni non volute (ad esempio l'invio di moduli contenenti dati sensibili), \textbf{minando la fiducia nel servizio} e compromettendo l'integrità delle sessioni lato client.
+	L'esposizione diretta dell'infrastruttura server è nulla, poiché l'attacco si concretizza unicamente sul dispositivo del fruitore del servizio. Tuttavia, il rischio di business è considerevole: eventuali frodi o furti di sessione minano irreparabilmente l'affidabilità, la fiducia e la reputazione del servizio offerto dall'organizzazione.
 	
 	% --- VULNERABILITA 5 ---
-	\section[Sensitive Data Exposure - MEDIUM]{VULN-05: Sensitive Data Exposure (Credenziali Occultate) \hfill \sevMED}
+	\section[Sensitive Data Exposure]{VULN-05: Sensitive Data Exposure (Credenziali Occultate) \hfill \sevMED}
 	\subsection{Descrizione della vulnerabilità}
 	L'ispezione dei contenuti statici e multimediali dell'applicazione ha rivelato una gestione impropria delle informazioni riservate. All'interno di un'immagine pubblicata sulla pagina di amministrazione primaria (\texttt{/admin}) è stata occultata, tramite tecniche di steganografia, una \textit{passphrase} in chiaro. Il dato nascosto rivela l'indirizzo esatto di un pannello amministrativo di livello superiore non documentato (\texttt{superadmin.php}). A queste si aggiunge la presenza di una password in chiaro in un file di sistema (\texttt{/usr/share/hidden/.passwd}), riferita all'utente \texttt{haclabs} e già descritta come componente della VULN-02.
 	
 	\subsection{Impatto sulla sicurezza}
-	L'impatto è \sevMED. Il difetto rientra nella categoria della divulgazione di dati sensibili (\textit{Sensitive Data Exposure}). L'utilizzo di tecniche di occultamento all'interno di risorse pubbliche, in assenza di meccanismi di autenticazione adeguati, si fonda sul paradigma della ``\textit{Security through Obscurity}'', approccio non considerato una misura di sicurezza valida dagli standard di settore.
+	Il mascheramento di dati critici all'interno di asset pubblici, in assenza di robusti controlli crittografici o autorizzativi, costituisce una grave negligenza procedurale. Questa problematica viola i principi fondamentali della corretta gestione dei segreti aziendali, esponendo informazioni che dovrebbero rimanere strettamente confidenziali.
 	
 	\subsection{Valutazione esposizione}
-	Nascondere informazioni critiche all'interno di file scaricabili pubblicamente costituisce una violazione delle best practice in materia di gestione dei segreti. Questa fuga di informazioni agisce come una ``mappa'' per l'attaccante: rivelando l'esistenza e l'indirizzo del pannello \texttt{superadmin.php}, fornisce un percorso diretto verso il componente vulnerabile descritto nella VULN-01, accelerando significativamente la catena di compromissione.
+	L'errata gestione dei segreti agisce come acceleratore per attacchi complessi. Rivelare l'esistenza di interfacce vulnerabili tramite la steganografia e abbandonare credenziali di sistema in directory interrogabili fornisce a un attaccante esterno una mappa esatta dei vettori critici, bypassando la necessità di lunghi \textit{bruteforce} e garantendo movimenti laterali rapidi.
 	
 	% --- VULNERABILITA 6 ---
-	\section[Information Disclosure - LOW]{VULN-06: Information Disclosure (ICMP/TCP Timestamp) \hfill \sevLOW}
+	\section[Information Disclosure]{VULN-06: Information Disclosure (Timestamp e File di Default) \hfill \sevLOW}
 	\subsection{Descrizione della vulnerabilità}
-	Durante la fase di enumerazione condotta tramite lo scanner OpenVAS è emerso che il sistema operativo del bersaglio risponde attivamente alle richieste di \textit{Timestamp} inoltrate sui protocolli ICMP e TCP. Questa funzionalità, abilitata per impostazione predefinita su alcune configurazioni di kernel Linux, permette a chiunque di interrogare l'host per conoscere l'orario di sistema e il tempo di attività continuo (\textit{uptime}).
+	Durante la fase di enumerazione condotta tramite lo scanner OpenVAS è emerso che il sistema operativo del bersaglio risponde attivamente alle richieste di \textit{Timestamp} inoltrate sui protocolli ICMP e TCP. In aggiunta alle metriche temporali, l'enumerazione del server web ha rivelato l'esposizione pubblica di file di default dell'installazione di Apache (nello specifico la risorsa \texttt{/icons/README}), che conferma ulteriormente la mancanza di un \textit{hardening} di base del servizio.
 	
 	\subsection{Impatto sulla sicurezza}
-	L'impatto diretto è \sevLOW, in quanto non consente né l'esecuzione di codice né la modifica di dati. Si tratta di una problematica legata esclusivamente alla divulgazione passiva di informazioni diagnostiche (\textit{Information Disclosure}).
+	La problematica è legata esclusivamente alla divulgazione passiva di informazioni diagnostiche (\textit{Information Disclosure}), e non comporta modifiche all'integrità dei dati, né iniezioni logiche.
 	
 	\subsection{Valutazione esposizione}
-	Sebbene il rischio immediato sia contenuto, le conseguenze in ottica difensiva non sono trascurabili. Conoscere l'uptime esatto di una macchina permette a un attaccante di sapere da quanto tempo il server non viene riavviato e quindi dedurre quali \textit{patch} di sicurezza del kernel potrebbero mancare. Queste informazioni agevolano le fasi di profilazione (\textit{OS Fingerprinting}) e la selezione degli \textit{exploit} da utilizzare, rendendo i tentativi di attacco successivi più mirati ed efficaci.
+	Conoscere l'uptime esatto di una macchina permette a un attaccante di dedurre quali \textit{patch} di sicurezza del kernel potrebbero mancare, orientando i tentativi di attacco futuri con precisione millimetrica e limitando il tempo necessario per la profilazione dell'obiettivo.
 	
 	
 	%==================================================
 	%  4. REMEDIATION REPORT
 	%==================================================
 	\chapter{Remediation Report}
-	Questa sezione è destinata al \textbf{management e ai responsabili delle policy di sicurezza}. L'obiettivo è tradurre le criticità tecniche emerse in raccomandazioni di sicurezza strutturate (misure correttive e migliorative), in modo da favorire una rapida riduzione del rischio e un rafforzamento complessivo dell'asset.
+	Questa sezione è destinata al \textbf{management e ai responsabili delle policy di sicurezza}. L'obiettivo è tradurre le criticità tecniche emerse in raccomandazioni di sicurezza strutturate (misure correttive e migliorative), in modo da favorire una rapida riduzione del rischio e un rafforzamento complessivo dell'asset. Le azioni correttive sono presentate in ordine di priorità discendente.
 	
 	\section{Obiettivo}
-	L'obiettivo della \textit{remediation} è eliminare i vettori di compromissione diretta (Command Injection e configurazione \texttt{sudo} permissiva) che pongono l'infrastruttura a rischio critico. Contestualmente, si mira a rafforzare la postura difensiva generale eliminando le fughe di informazioni e implementando le \textit{best practice} di configurazione web. Le azioni correttive sono presentate in ordine di priorità.
+	L'obiettivo della \textit{remediation} è eliminare i vettori di compromissione diretta (Command Injection e configurazione \texttt{sudo} permissiva) che pongono l'infrastruttura a rischio critico. Contestualmente, si mira a rafforzare la postura difensiva generale eliminando le fughe di informazioni e implementando le \textit{best practice} di configurazione web. 
 	
 	\section{Raccomandazioni di sicurezza}
 	
-	\subsection[VULN-01: Command Injection]{VULN-01: Command Injection \hfill Priorità: \sevCRIT}
+	\subsection{VULN-01: Command Injection}
 	\begin{itemize}[leftmargin=*]
 		\item \textbf{Validazione dell'input:} sostituire l'attuale meccanismo basato su \textit{blacklist} con un'\textit{allowlist} di formato. Per gli input attesi come indirizzi IP, utilizzare funzioni di validazione native e sicure (es. \texttt{filter\_var(\$ip, FILTER\_VALIDATE\_IP)} in PHP) prima di processare il valore.
 		\item \textbf{Eliminazione delle chiamate dirette alla shell:} sostituire \texttt{shell\_exec()} con \texttt{proc\_open()} accompagnato da \texttt{escapeshellarg()}, oppure con librerie native del linguaggio che non richiedano l'invocazione di una shell di sistema.
 		\item \textbf{Principio del minimo privilegio:} verificare che l'utente sotto cui gira il web server (\texttt{www-data}) operi in un ambiente isolato (es. \textit{chroot} jail o container) e non disponga di permessi di lettura/scrittura al di fuori della propria \textit{directory} operativa.
 	\end{itemize}
 	
-	\subsection[VULN-02: Local Privilege Escalation]{VULN-02: Local Privilege Escalation \hfill Priorità: \sevCRIT}
+	\subsection{VULN-02: Local Privilege Escalation}
 	\begin{itemize}[leftmargin=*]
 		\item \textbf{Bonifica delle credenziali:} rimuovere il file \texttt{/usr/share/hidden/.passwd} contenente la password in chiaro ed effettuare un reset forzato della password dell'account \texttt{haclabs}.
 		\item \textbf{Hardening del file Sudoers:} modificare il file \texttt{/etc/sudoers} esclusivamente tramite il comando \texttt{visudo}, rimuovendo la direttiva \texttt{NOPASSWD} associata al binario \texttt{find} per l'utente \texttt{haclabs}.
 		\item \textbf{Audit dei binari GTFOBins:} condurre una revisione completa di tutti i binari concessi in esecuzione via \texttt{sudo}, evitando di delegare permessi elevati a programmi (come \texttt{find}, \texttt{tar}, \texttt{awk}, \texttt{vim}) noti per disporre di funzionalità native sfruttabili per lo \textit{spawn} di shell.
 	\end{itemize}
 	
-	\subsection[VULN-03: CUPS Vulnerability]{VULN-03: CUPS Vulnerability \hfill Priorità: \sevHIGH}
+	\subsection{VULN-03: CUPS Vulnerability}
 	\begin{itemize}[leftmargin=*]
 		\item \textbf{Disabilitazione dei servizi superflui:} arrestare e disabilitare definitivamente il demone \texttt{cups-browsed} tramite il gestore di servizi di sistema (es. \texttt{systemctl disable cups-browsed.service}), poiché l'erogazione di servizi di stampa non è pertinente alla funzione di web server svolta dall'host.
 		\item \textbf{Hardening di rete:} configurare regole del \textit{firewall} (es. \texttt{iptables} o \texttt{ufw}) per bloccare tutto il traffico UDP in ingresso sulla porta 631 proveniente da reti non fidate.
 		\item \textbf{Patching del sistema:} applicare gli aggiornamenti di sicurezza distribuiti dal fornitore del sistema operativo per risolvere la CVE-2024-47176 a livello di pacchetto.
 	\end{itemize}
 	
-	\subsection[VULN-04: Security Misconfiguration]{VULN-04: Security Misconfiguration (Header HTTP) \hfill Priorità: \sevMED}
+	\subsection{VULN-04: Security Misconfiguration (Header HTTP)}
 	\begin{itemize}[leftmargin=*]
 		\item \textbf{Prevenzione anti-framing:} configurare il web server per includere l'intestazione \texttt{X-Frame-Options: DENY} (o, in alternativa, la direttiva CSP \texttt{frame-ancestors 'none'}) in tutte le risposte HTTP.
 		\item \textbf{Content Security Policy:} implementare una policy CSP restrittiva che autorizzi esclusivamente l'esecuzione di risorse provenienti dal dominio locale (es. \texttt{default-src 'self'}).
@@ -300,7 +291,7 @@
 		\item \textbf{Aggiornamento di Apache:} aggiornare il web server alla versione corrente, dato che la 2.4.29 è significativamente obsoleta rispetto alle release supportate.
 	\end{itemize}
 	
-	\subsection[VULN-05: Sensitive Data Exposure]{VULN-05: Sensitive Data Exposure \hfill Priorità: \sevMED}
+	\subsection{VULN-05: Sensitive Data Exposure}
 	\begin{itemize}[leftmargin=*]
 		\item \textbf{Bonifica delle risorse pubbliche:} rimuovere le immagini contenenti dati steganograficamente occultati e sottoporre a revisione tutti i contenuti multimediali esposti sul web server.
 		\item \textbf{Abbandono della Security through Obscurity:} smettere di basare la sicurezza di una pagina (come \texttt{superadmin.php}) sulla sola segretezza dell'URL, e implementare un controllo di accesso esplicito.
@@ -308,10 +299,11 @@
 		\item \textbf{Gestione dei segreti:} adottare strumenti dedicati (es. vault) per la memorizzazione di credenziali e configurazioni sensibili, eliminando ogni traccia di password in chiaro dal file system e dai commenti del codice sorgente.
 	\end{itemize}
 	
-	\subsection[VULN-06: Information Disclosure]{VULN-06: Information Disclosure (ICMP/TCP Timestamp) \hfill Priorità: \sevLOW}
+	\subsection{VULN-06: Information Disclosure (ICMP/TCP Timestamp)}
 	\begin{itemize}[leftmargin=*]
 		\item \textbf{Disabilitazione ICMP Timestamp:} configurare le regole \texttt{iptables} per scartare in modo silente i pacchetti ICMP di tipo 13 (Timestamp Request) e 14 (Timestamp Reply) in ingresso.
 		\item \textbf{Disabilitazione TCP Timestamp:} valutare la disabilitazione dell'estensione TCP Timestamp (\texttt{net.ipv4.tcp\_timestamps=0} in \texttt{sysctl.conf}) se non strettamente necessaria.
+		\item \textbf{Rimozione file di default:} Rimuovere o disabilitare l'accesso alla directory \texttt{/icons/} e ad altri file di installazione predefiniti di Apache non necessari all'applicativo.
 		\item \textbf{Minimizzazione del banner:} effettuare una revisione delle risposte HTTP del server per evitare la divulgazione di informazioni di versione (es. \texttt{Apache/2.4.29 (Ubuntu)}) tramite la direttiva \texttt{ServerTokens Prod}.
 	\end{itemize}
 	
@@ -322,7 +314,8 @@
 	Questa sezione espone le evidenze emerse dall'attività di \textit{penetration testing}, fungendo da ponte tra la visione manageriale dei capitoli precedenti e l'analisi tecnica del \textit{Detailed Summary}.
 	
 	\section{Convenzioni e catalogazione}
-	Per garantire uniformità di lettura, si illustra di seguito la convenzione adottata per la catalogazione delle vulnerabilità. La severità di ciascuna è classificata secondo una scala qualitativa standard di settore, che riflette l'impatto tecnico, l'esposizione al rischio e la facilità di sfruttamento.
+	\label{sec:convenzioni}
+	Per garantire uniformità di lettura e classificazione tecnica in tutto il documento, la severità di ciascuna vulnerabilità è stata definita secondo una scala qualitativa standard di settore, allineata alle linee guida OWASP~\cite{owasp-top10}. Tale scala riflette l'impatto potenziale, l'esposizione al rischio e la facilità di sfruttamento.
 	
 	\vspace{0.3cm}
 	\begin{table}[H]
@@ -347,7 +340,7 @@
 	\vspace{0.3cm}
 	
 	\section{Dettaglio dei risultati}
-	La seguente tabella riepiloga le evidenze emerse dall'attività, ordinate per livello di criticità.
+	La seguente tabella riepiloga le evidenze emerse dall'attività, aggregate e ordinate per livello di criticità decrescente.
 	
 	\begin{table}[H]
 		\centering
@@ -446,11 +439,8 @@
 	\label{sec:detailed}
 	In questa sezione viene presentata l'analisi tecnica dettagliata per ogni vulnerabilità rilevata, organizzata in quattro punti: modalità di scoperta, origini e cause, rischi e impatti sull'asset, contromisure tecniche. Per la documentazione operativa dei test (comandi, output, screenshot) si rimanda al documento \textit{Metodologie Utilizzate PT}.
 	
-	\section{Classificazione del rischio}
-	Come illustrato nel \textit{Findings Summary}, le criticità sono catalogate in base al loro impatto tecnico e classificate nei livelli CRITICAL, HIGH, MEDIUM e LOW.
-	
 	% --- VULNERABILITA 1 ---
-	\section[Command Injection]{VULN-01: Command Injection \hfill \sevCRIT}
+	\section{VULN-01: Command Injection}
 	\begin{tcolorbox}[colback=gray!5, colframe=headerblue, arc=3pt, boxrule=0.8pt, breakable]
 		\textbf{Modalità di scoperta:}\\
 		La vulnerabilità è stata identificata durante l'ispezione manuale del form della pagina \texttt{superadmin.php}. Dopo aver verificato che la pagina invoca effettivamente il comando \texttt{ping} verso l'IP fornito, sono stati condotti tentativi di concatenazione di comandi tramite metacaratteri shell. I primi test con \texttt{\&\&} e \texttt{;} sono stati intercettati da un filtro lato server; l'utilizzo del metacarattere \textit{pipe} (\texttt{|}) ha invece aggirato il filtro, permettendo di leggere il sorgente PHP della pagina e confermare la presenza della vulnerabilità.
@@ -463,7 +453,7 @@
 		\vspace{0.2cm}\hrule\vspace{0.2cm}
 		
 		\textbf{Rischi e impatti sull'asset:}\\
-		La mancata sanitizzazione consente a un attaccante di concatenare istruzioni arbitrarie alla chiamata \texttt{ping} eseguita dal server. Durante il test, il team ha sfruttato la combinazione di \textit{Command Substitution} (\texttt{`...`}) e codifica Base64 per aggirare il filtro sui caratteri vietati e instaurare una \textit{reverse shell} verso la macchina attaccante, ottenendo l'accesso interattivo al file system con i privilegi dell'utente \texttt{www-data}.
+		La mancata sanitizzazione consente a un attaccante di concatenare istruzioni arbitrarie alla chiamata \texttt{ping} eseguita dal server. Durante il test, il team ha sfruttato la combinazione di \textit{Command Substitution} (\texttt{`...`}) e codifica Base64 per aggirare il filtro sui caratteri vietati e instaurare una \textit{reverse shell} verso la macchina attaccante, ottenendo l'accesso interattivo al file system locale ed l'esecuzione di comandi eseguiti con i privilegi dell'utente applicativo \texttt{www-data}.
 		
 		\vspace{0.2cm}\hrule\vspace{0.2cm}
 		
@@ -472,7 +462,7 @@
 	\end{tcolorbox}
 	
 	% --- VULNERABILITA 2 ---
-	\section[Local Privilege Escalation]{VULN-02: Local Privilege Escalation (Sudoers Misconfiguration) \hfill \sevCRIT}
+	\section{VULN-02: Local Privilege Escalation}
 	\begin{tcolorbox}[colback=gray!5, colframe=headerblue, arc=3pt, boxrule=0.8pt, breakable]
 		\textbf{Modalità di scoperta:}\\
 		La vulnerabilità è stata identificata nella fase di enumerazione locale successiva all'ottenimento della \textit{reverse shell}. L'esplorazione delle directory accessibili dal contesto \texttt{www-data} ha permesso di individuare il file nascosto \texttt{/usr/share/hidden/.passwd}, contenente in chiaro la password dell'utente \texttt{haclabs}. Dopo aver effettuato il movimento laterale verso questo utente tramite \texttt{su}, l'esecuzione di \texttt{sudo -l} ha rivelato la presenza di privilegi anomali assegnati al binario \texttt{find}.
@@ -485,7 +475,7 @@
 		\vspace{0.2cm}\hrule\vspace{0.2cm}
 		
 		\textbf{Rischi e impatti sull'asset:}\\
-		L'impatto tecnico è la compromissione totale della macchina. L'attaccante può invocare \texttt{find} con privilegi di \textit{root} tramite la delega \texttt{sudo} e passare come argomento di \texttt{-exec} l'invocazione di \texttt{/bin/bash}, ottenendo una shell interattiva che eredita i privilegi del processo padre (\textit{root}). Da questa posizione il sistema è interamente compromesso.
+		Tramite la direttiva sudo compromessa, l'attaccante ha la facoltà di eseguire \texttt{/usr/bin/find} e passare ad esso il comando \texttt{-exec "/bin/bash"}. Questo escamotage causa lo spawn istantaneo di una shell interattiva che eredita i privilegi del comando padre, ovvero \textit{root}. A questo punto, il controllo tecnico sull'host e su tutti i file di sistema è totale.
 		
 		\vspace{0.2cm}\hrule\vspace{0.2cm}
 		
@@ -494,7 +484,7 @@
 	\end{tcolorbox}
 	
 	% --- VULNERABILITA 3 ---
-	\section[CUPS Vulnerability]{VULN-03: CUPS Unauthenticated Remote Registration (CVE-2024-47176) \hfill \sevHIGH}
+	\section{VULN-03: CUPS Unauthenticated Remote Registration}
 	\begin{tcolorbox}[colback=gray!5, colframe=headerblue, arc=3pt, boxrule=0.8pt, breakable]
 		\textbf{Modalità di scoperta:}\\
 		L'esposizione del servizio è stata inizialmente rilevata tramite scansione automatizzata con Nessus~\cite{nessus-docs} (plugin ID 207864), che ha individuato il demone \texttt{cups-browsed} in ascolto sulla porta UDP 631 e l'ha associato alla CVE-2024-47176~\cite{cve-cups}. La presenza del servizio è stata successivamente confermata tramite enumerazione attiva con Nmap~\cite{nmap-docs} sulla porta UDP corrispondente.
@@ -518,7 +508,7 @@
 	\end{tcolorbox}
 	
 	% --- VULNERABILITA 4 ---
-	\section[Security Misconfiguration]{VULN-04: Security Misconfiguration (Header HTTP) \hfill \sevMED}
+	\section{VULN-04: Security Misconfiguration}
 	\begin{tcolorbox}[colback=gray!5, colframe=headerblue, arc=3pt, boxrule=0.8pt, breakable]
 		\textbf{Modalità di scoperta:}\\
 		La problematica è stata rilevata in fase di scansione del web server tramite Nikto~\cite{nikto-docs}, che ha analizzato le risposte HTTP del server identificando l'assenza di tutte le principali intestazioni di sicurezza. La rilevazione è stata corroborata da OWASP ZAP, che ha confermato le stesse evidenze e ha aggiunto la segnalazione di un potenziale vettore XSS su attributi HTML.
@@ -531,7 +521,7 @@
 		\vspace{0.2cm}\hrule\vspace{0.2cm}
 		
 		\textbf{Rischi e impatti sull'asset:}\\
-		L'assenza di \texttt{X-Frame-Options} (o della direttiva CSP \texttt{frame-ancestors}) rende l'applicativo vulnerabile al \textit{Clickjacking}, vettore confermato tramite Proof of Concept locale dal team durante la fase di Target Exploitation (cfr. \textit{Metodologie Utilizzate PT}). La mancanza di CSP non impone vincoli sulle fonti da cui possono essere caricati ed eseguiti script lato client, aumentando l'impatto di eventuali vulnerabilità XSS. L'assenza di HSTS, infine, lascia aperta la possibilità di attacchi di \textit{downgrade} del protocollo qualora il sito fosse servito anche su HTTPS.
+		La mancanza dell'header \texttt{X-Frame-Options} autorizza i browser dei client ad incorporare l'applicazione all'interno di tag \texttt{<iframe>} su domini di terze parti arbitrari, abilitando di fatto attacchi di \textit{UI Redressing} (Clickjacking). Congiuntamente, l'assenza della direttiva \texttt{Content-Security-Policy} (CSP) fallisce nel limitare le fonti di script consentiti: un attaccante può quindi sovrapporre script dannosi (vettori XSS) all'interfaccia legittima, intercettando input e sessioni utente direttamente a livello di DOM..
 		
 		\vspace{0.2cm}\hrule\vspace{0.2cm}
 		
@@ -540,10 +530,10 @@
 	\end{tcolorbox}
 	
 	% --- VULNERABILITA 5 ---
-	\section[Sensitive Data Exposure]{VULN-05: Sensitive Data Exposure (Credenziali Occultate) \hfill \sevMED}
+	\section{VULN-05: Sensitive Data Exposure}
 	\begin{tcolorbox}[colback=gray!5, colframe=headerblue, arc=3pt, boxrule=0.8pt, breakable]
 		\textbf{Modalità di scoperta:}\\
-		La vulnerabilità è emersa in due punti distinti dell'attività. Durante l'ispezione manuale della pagina \texttt{/admin}, è stata individuata nel codice HTML una stringa \texttt{passphrase:harder} in chiaro all'interno dei commenti. Utilizzando \texttt{steghide} con tale \textit{passphrase} su una delle immagini esposte (\texttt{haclabs.jpeg}), è stato estratto un file di testo contenente, in Base64, il nome di una pagina amministrativa non documentata (\texttt{superadmin.php}). Successivamente, nella fase di post-exploitation, è stato individuato anche il file \texttt{/usr/share/hidden/.passwd} contenente in chiaro la password dell'utente \texttt{haclabs} (componente della VULN-02).
+		La vulnerabilità è emersa in due punti distinti dell'attività. Durante l'ispezione manuale della pagina \texttt{/admin}, è stata individuata nel codice HTML una stringa \texttt{passphrase:harder} in chiaro all'interno dei commenti. Utilizzando \texttt{steghide} con tale \textit{passphrase} su una delle immagini esposte (\texttt{haclabs.jpeg}), è stata estratto un file di testo contenente, in Base64, il nome di una pagina amministrativa non documentata (\texttt{superadmin.php}). Successivamente, nella fase di post-exploitation, è stato individuato anche il file \texttt{/usr/share/hidden/.passwd} contenente in chiaro la password dell'utente \texttt{haclabs} (componente della VULN-02).
 		
 		\vspace{0.2cm}\hrule\vspace{0.2cm}
 		
@@ -553,7 +543,7 @@
 		\vspace{0.2cm}\hrule\vspace{0.2cm}
 		
 		\textbf{Rischi e impatti sull'asset:}\\
-		L'esposizione di informazioni di routing applicativo agisce da vettore facilitatore per la VULN-01: rivelando l'esistenza e l'indirizzo del pannello \texttt{superadmin.php}, accelera significativamente la \textit{kill-chain} di compromissione. L'esposizione della password dell'utente \texttt{haclabs}, a sua volta, abilita lo \textit{User Pivoting} dal contesto \texttt{www-data} verso un utente con privilegi maggiori, come descritto nella VULN-02.
+		Dal punto di vista della kill-chain tecnica, l'estrazione tramite \texttt{steghide} dal file \texttt{haclabs.jpeg} e la conseguente decodifica Base64 del payload estratto hanno fornito la rotta di navigazione esatta (\texttt{/superadmin.php}) verso il componente affetto dalla Command Injection. Successivamente, la visibilità globale in lettura del file \texttt{/usr/share/hidden/.passwd} ha permesso all'attaccante di visualizzare tramite comando \texttt{cat} la password locale in chiaro, fornendo le chiavi crittografiche necessarie per eseguire il movimento laterale tramite \texttt{su} dal contesto limitato di Apache verso un utente di sistema.
 		
 		\vspace{0.2cm}\hrule\vspace{0.2cm}
 		
@@ -562,7 +552,7 @@
 	\end{tcolorbox}
 	
 	% --- VULNERABILITA 6 ---
-	\section[Information Disclosure]{VULN-06: Information Disclosure (ICMP/TCP Timestamp) \hfill \sevLOW}
+	\section{VULN-06: Information Disclosure}
 	\begin{tcolorbox}[colback=gray!5, colframe=headerblue, arc=3pt, boxrule=0.8pt, breakable]
 		\textbf{Modalità di scoperta:}\\
 		La misconfigurazione è stata identificata tramite scansione con OpenVAS~\cite{openvas-docs}. Lo scanner ha inviato pacchetti ICMP di tipo 13 (Timestamp Request) e richieste TCP con opzione Timestamp abilitata, ricevendo in entrambi i casi risposte valide e calcolabili dal target.
@@ -575,7 +565,7 @@
 		\vspace{0.2cm}\hrule\vspace{0.2cm}
 		
 		\textbf{Rischi e impatti sull'asset:}\\
-		Il server comunica involontariamente l'orario del proprio orologio di sistema e, soprattutto, l'\textit{uptime} (il tempo trascorso dall'ultimo riavvio). Un attaccante può utilizzare questa informazione per affinare il proprio \textit{OS Fingerprinting} e dedurre con maggiore precisione la presenza di eventuali \textit{patch} di sicurezza del kernel non ancora applicate, poiché un \textit{uptime} prolungato implica l'assenza di aggiornamenti critici che richiedono un riavvio.
+		Il server comunica involontariamente l'orario del proprio orologio di sistema e, soprattutto, l'\textit{uptime} (il tempo trascorso dall'ultimo riavvio). L'esposizione al livello di ICMP Echo \textit{Timestamp Request} (Type 13) non provoca buffer overflow, corruzione del kernel o Denial-of-Service, rimanendo puramente informativa per una profilazione di rete esterna.
 		
 		\vspace{0.2cm}\hrule\vspace{0.2cm}
 		
@@ -585,9 +575,7 @@
 	
 	\newpage
 	
-	%==================================================
-	%  7. BIBLIOGRAFIA
-	%==================================================
+
 	\chapter{Bibliografia}
 	{
 		\renewcommand{\chapter}[2]{}
